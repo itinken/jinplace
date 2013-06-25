@@ -117,9 +117,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			this.element = $el;
 			this.editor = $.fn[pluginName].editors[this.formType];
-
-			if (opts.data && opts.formType == 'select')
-				this.choiceValues = $.parseJSON(opts.data);
 		},
 
 		bindElement: function() {
@@ -454,6 +451,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			activate: function (jip, data) {
 				var field = $("<select>").addClass(jip.inputClass),
 						choiceValues = $.parseJSON(data);
+				this.choices = choiceValues;
 
 				$.each(choiceValues, function(index, value) {
 					var opt = $("<option>").val(value[0]).html(value[1]);
@@ -469,7 +467,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			getDisplay: function(jip) {
 				var val = jip.inputField.val(),
 						display = '';
-				$.each(jip.choiceValues, function(index, value) {
+				$.each(this.choices, function(index, value) {
 					if (val == value[0]) {
 						display = value[1];
 						return false;
