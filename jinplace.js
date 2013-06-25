@@ -105,6 +105,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			opts.cancelButton = $el.attr("data-cancel-button");
 			opts.inputClass = $el.attr("data-input-class");
 			opts.activator = $el.attr("data-activator") || $el;
+			opts.activator = $(opts.activator);
 			var only = $el.attr("data-text-only");
 			if (only)
 				opts.textOnly = only != 'false';
@@ -122,7 +123,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		},
 
 		bindElement: function() {
-			$(this.activator).on('click.jinplace', $.proxy(this.clickHandler, this));
+			// Remove any existing handler we set and bind to the activation click handler.
+			this.activator.off('click.jinplace');
+			this.activator.on('click.jinplace', $.proxy(this.clickHandler, this));
 		},
 
 		/**
@@ -136,7 +139,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			$(this.activator).off('click.jinplace');
+			// Turn off the activation handler, and disable any effect in case the activator
+			// was a button that might submit.
+			this.activator.off('click.jinplace');
+			this.activator.on('click.jinplace', function(ev) { ev.preventDefault();});
 			this.origValue = this.element.html();
 			this.editor.activate(this, this.element);
 		},
@@ -256,8 +262,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		 *
 		 * @param jip The JinPlace object.
 		 * @param inputField The newly created input field.
-		 * @param buttons True if buttons can be added.  Whether buttons really are added
+		 * @param {boolean} [buttons] True if buttons can be added.  Whether buttons really are added
 		 * depends on the options and data-* attributes.
+		 * @returns {jQuery} The newly created form element.
 		 */
 		var createForm = function(jip, inputField, buttons) {
 			jip.inputField = inputField;
@@ -365,7 +372,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		 * A regular text input field.
 		 */
 		this.input = {
-			activate: function(jip, el) {
+			activate: function(jip) {
 				var field = $("<input>")
 						.attr("type", "input")
 						.addClass(jip.inputClass);
@@ -375,9 +382,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 		// A textarea field
 		this.textarea = {
-			activate: function (jip, el) {
-				var width = el.width();
-				var height = el.height();
+			activate: function (jip) {
+				var el = jip.element,
+						width = el.width(),
+						height = el.height();
 
 				var field = $("<textarea>")
 						.addClass(jip.inputClass)
@@ -388,7 +396,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 				createForm(jip, field, true);
 
-				field.elastic();
+				if (field.elastic)
+					field.elastic();
 			}
 		};
 
