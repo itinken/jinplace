@@ -187,7 +187,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				data = this.element.html();
 			}
 
-			return $.when(data);
+			return $.when(data).then(function(data) {
+				if (data == self.nil)
+					return '';
+				return data;
+			});
 		},
 
 		/**
@@ -289,7 +293,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		okButton: null,
 		cancelButton: null,
 		textOnly: true,
-		nil: 'Click to edit'
+		nil: '[ --- ]'
 	};
 
 	// The field editors can be overridden or added to
