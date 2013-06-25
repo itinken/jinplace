@@ -105,10 +105,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			opts.cancelButton = $el.attr("data-cancel-button");
 			opts.inputClass = $el.attr("data-input-class");
 			opts.activator = $el.attr("data-activator") || $el;
-			opts.textOnly = true;
 			var only = $el.attr("data-text-only");
 			if (only)
-				opts.textOnly = only == 'true';
+				opts.textOnly = only != 'false';
+			opts.nil = $el.attr("data-nil");
 
 			// All options are set as properties of this object, which is known as jip in
 			// the form field editors.
@@ -244,7 +244,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		inputClass: '',
 		okButton: null,
 		cancelButton: null,
-		sanitize: true,
+		textOnly: true,
 		nil: 'Click to edit'
 	};
 
