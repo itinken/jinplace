@@ -298,7 +298,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		 * The form has been added to the DOM, set up the input to receive focus and events.
 		 *
 		 * If there are no button, then blur has to save.
-		 * If just OK button, then ??
+		 * If just OK button, then blur cancels
 		 * If both buttons, then use the buttons to save and cancel only (safest option for areas).
 		 *
 		 * @param jip The main JinPlace object.
@@ -314,22 +314,29 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			/**
 			 * A delayed blur handler.  When we click on a button, there will be a blur event
 			 * from the field before the button click. Therefore we need to wait before calling
-			 * the blur handler and cancel it if there is a click come in first.
+			 * the blur handler and cancel it if a click comes in first.
 			 *
 			 * @param handler The real blur handler that will be called.
 			 */
 			var delayedBlur = function(handler) {
 
 				var onBlur = function (ev) {
-					var d = $.Deferred(function (d) {
-						setTimeout(function () {
-							d.resolveWith(jip, [ev]);
-						}, 500);
+					var t = setTimeout(function () {
+						handler.call(jip, ev);
+					}, 500);
+
+					// Hook up all input fields within the element. This will include all the
+					// buttons.  Also includes the text field, so you may be able to cancel
+					// an inadvertent blur by quickly clicking back in the text. (No guarantees
+					// though!).
+					//
+					// If a click occurs the the blur is cancelled.
+					jip.element.on('click', 'input', function() {
+						clearTimeout(t);
 					});
-					jip.element.on('click', 'input', d.reject);
-					d.done(handler);
 				};
 
+				// Set the handler to our wrapper.
 				$field.on('blur', onBlur);
 			};
 
