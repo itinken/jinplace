@@ -144,7 +144,49 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			this.activator.off('click.jinplace');
 			this.activator.on('click.jinplace', function(ev) { ev.preventDefault();});
 			this.origValue = this.element.html();
-			this.editor.activate(this, this.element);
+
+			var editor = this.editor;
+			this.fetchData().done(function(data) {
+				editor.activate(self, data);
+			});
+		},
+
+		requestParams: function(isSend) {
+			var params = { "id": this.element.id,
+				"object": this.objectName,
+				attribute: this.attribute
+			};
+
+			if (isSend)
+				params.value = this.inputField.val();
+
+			return params;
+		},
+
+		/**
+		 * Fetch the data that will be placed into the editing control.  The data is
+		 * obtained from the following sources in this order:
+		 * 1. data-data (or options.data)
+		 * 2. data-loadurl (or options.loadurl) a request is made to the given url and the
+		 *    resulting data is used.
+		 * 3. The existing contents of 'element'.
+		 */
+		fetchData: function() {
+			var data, self = this;
+			if (this.data) {
+				data = this.data;
+
+			} else if (this.loadurl) {
+				data = $.ajax(this.loadurl, {
+					data: this.requestParams(),
+					context: self
+				});
+
+			} else {
+				data = this.element.html();
+			}
+
+			return $.when(data);
 		},
 
 		/**
@@ -181,16 +223,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		 */
 		submitHandler: function (ev) {
 			ev.preventDefault();
-			var data = {
-				"id": this.element.id,
-				"object": this.objectName,
-				attribute: this.attribute,
-				value: this.inputField.val()
-			};
-
 			$.ajax(this.url, {
 				type: "post",
-				data: data,
+				data: this.requestParams(true),
 				dataType: 'text',
 				context: this,
 				success: this.onUpdate,
@@ -372,17 +407,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		 * A regular text input field.
 		 */
 		this.input = {
-			activate: function(jip) {
+			activate: function(jip, data) {
 				var field = $("<input>")
 						.attr("type", "input")
-						.addClass(jip.inputClass);
+						.addClass(jip.inputClass)
+						.val(data);
 				createForm(jip, field, true);
 			}
 		};
 
 		// A textarea field
 		this.textarea = {
-			activate: function (jip) {
+			activate: function (jip, data) {
 				var el = jip.element,
 						width = el.width(),
 						height = el.height();
@@ -392,7 +428,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 						.css({
 							'min-width': width,
 							'min-height': height
-						});
+						})
+						.html(data);
 
 				createForm(jip, field, true);
 
@@ -407,9 +444,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		 * the option value to the option text that is displayed.
 		 */
 		this.select = {
-			activate: function(jip, el) {
-				var field = $("<select>").addClass(jip.inputClass);
-				$.each(jip.choiceValues, function(index, value) {
+			activate: function (jip, data) {
+				var field = $("<select>").addClass(jip.inputClass),
+						choiceValues = $.parseJSON(data);
+
+				$.each(choiceValues, function(index, value) {
 					var opt = $("<option>").val(value[0]).html(value[1]);
 					if (value[1] == jip.element.text())
 						opt.attr("selected", "1");
