@@ -2,6 +2,7 @@
 <project version="4">
   <component name="JavaScriptLibraryMappings">
     <file url="PROJECT" libraries="{jquery}" />
+    <excludedPredefinedLibrary name="HTML5 / EcmaScript 5" />
   </component>
 </project>
 

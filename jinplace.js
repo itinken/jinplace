@@ -260,6 +260,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		 * depends on the options and data-* attributes.
 		 */
 		var createForm = function(jip, inputField, buttons) {
+			jip.inputField = inputField;
+
 			var form = $("<form>")
 					.attr("style", "display: inline;")
 					.attr("action", "javascript:void(0);")
@@ -269,7 +271,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				addButtons(jip, form);
 
 			setupInput(jip, form, inputField);
-			jip.inputField = inputField;
 			return form;
 		};
 
@@ -296,20 +297,47 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		/**
 		 * The form has been added to the DOM, set up the input to receive focus and events.
 		 *
+		 * If there are no button, then blur has to save.
+		 * If just OK button, then ??
+		 * If both buttons, then use the buttons to save and cancel only (safest option for areas).
+		 *
 		 * @param jip The main JinPlace object.
 		 * @param $form The form we are creating.
 		 * @param $field The field within the form.
 		 */
-		//
 		var setupInput = function(jip, $form, $field) {
 			jip.element.html($form);
 
 			// Focus the field
 			$field.focus();
 
-			// If there is a cancel button, then blur does not cancel.
-			if (!jip.cancelButton)
-				$field.on('blur', $.proxy(jip.cancelHandler, jip));
+			/**
+			 * A delayed blur handler.  When we click on a button, there will be a blur event
+			 * from the field before the button click. Therefore we need to wait before calling
+			 * the blur handler and cancel it if there is a click come in first.
+			 *
+			 * @param handler The real blur handler that will be called.
+			 */
+			var delayedBlur = function(handler) {
+
+				var onBlur = function (ev) {
+					var d = $.Deferred(function (d) {
+						setTimeout(function () {
+							d.resolveWith(jip, [ev]);
+						}, 500);
+					});
+					jip.element.on('click', 'input', d.reject);
+					d.done(handler);
+				};
+
+				$field.on('blur', onBlur);
+			};
+
+			if (!jip.okButton) {
+				delayedBlur(jip.submitHandler);
+			} else if (!jip.cancelButton) {
+				delayedBlur(jip.cancelHandler);
+			}
 
 			$form.submit($.proxy(jip.submitHandler, jip))
 		};
