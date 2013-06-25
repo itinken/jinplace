@@ -141,13 +141,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			// Turn off the activation handler, and disable any effect in case the activator
 			// was a button that might submit.
-			this.activator.off('click.jinplace');
-			this.activator.on('click.jinplace', function(ev) { ev.preventDefault();});
+			this.activator.off('click.jinplace')
+					.on('click.jinplace', function(ev) { ev.preventDefault();});
+
 			this.origValue = this.element.html();
 
-			var editor = this.editor;
+			var self = this;
 			this.fetchData().done(function(data) {
-				editor.activate(self, data);
+				self.editor.activate(self, data);
 			});
 		},
 
@@ -254,6 +255,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		setContent: function(data) {
 			if (this.editor.getDisplay)
 				data = this.editor.getDisplay(this);
+			if (!data)
+				data = this.nil;
 			if (this.textOnly) {
 				this.element.text(data);
 			} else {
