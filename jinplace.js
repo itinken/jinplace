@@ -69,31 +69,30 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 	// The actual plugin constructor
 	function JinPlace(element, options) {
-		this.element = element;
-		this.options = $.extend({}, $.fn[pluginName].defaults, options);
+		this.element = $(element); // The editable element (often a span or div).
 
-		this.init();
+		var opts = this.options = $.extend({},
+				$.fn[pluginName].defaults,
+				options,
+				this.elementOptions(this.element));
+
+		// TMP add all options to 'this'
+		$.extend(this, opts);
+
+		this.editor = $.fn[pluginName].editors[opts.formType];
+
+		this.bindElement();
 	}
 
 	JinPlace.prototype = {
 
-		init: function () {
-			// call them like so: this.yourOtherFunction(this.element, this.options).
-			this.initOptions($(this.element), this.options);
-			this.bindElement();
-		},
-
 		/**
-		 * Options have defaults in the standard jquery way and can also be set during
-		 * the jinplace({ ..settings.. }) call.
-		 *
-		 * Mostly however options are set on the element using data-* attributes.
+		 * Get the options that are set on the editable element with the data-* attributes.
 		 *
 		 * @param $el The element that is being made editable.
-		 * @param defaultOpts The default options.
 		 */
 		// Options are set using data- attributes of the element.
-		initOptions: function ($el, defaultOpts) {
+		elementOptions: function ($el) {
 			var opts = {};
 			opts.formType = $el.attr("data-type");
 			opts.url = $el.attr("data-url");
@@ -111,18 +110,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				opts.textOnly = only != 'false';
 			opts.nil = $el.attr("data-nil");
 
-			// All options are set as properties of this object, which is known as jip in
-			// the form field editors.
-			$.extend(this, defaultOpts, opts);
-
-			this.element = $el;
-			this.editor = $.fn[pluginName].editors[this.formType];
+			return opts;
 		},
 
 		bindElement: function() {
 			// Remove any existing handler we set and bind to the activation click handler.
-			this.activator.off('click.jinplace');
-			this.activator.on('click.jinplace', $.proxy(this.clickHandler, this));
+			this.activator
+					.off('click.jinplace')
+					.on('click.jinplace', $.proxy(this.clickHandler, this));
 		},
 
 		/**
@@ -138,7 +133,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			// Turn off the activation handler, and disable any effect in case the activator
 			// was a button that might submit.
-			this.activator.off('click.jinplace')
+			$(ev.currentTarget).off('click.jinplace')
 					.on('click.jinplace', function(ev) { ev.preventDefault();});
 
 			this.origValue = this.element.html();
@@ -369,7 +364,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				var onBlur = function (ev) {
 					var t = setTimeout(function () {
 						handler.call(jip, ev);
-					}, 500);
+					}, 200);
 
 					// Hook up all input fields within the element. This will include all the
 					// buttons.  Also includes the text field, so you may be able to cancel
