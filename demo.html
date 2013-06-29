@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.2.1/knockout-min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/json2/20121008/json2.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shCore.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushXml.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushJScript.min.js"></script>
+
+<link rel=stylesheet href="http://bitbucket.com/itinken/jinplace/wiki/css/shCore.css">
+<link rel=stylesheet href="http://bitbucket.com/itinken/jinplace/wiki/css/shCoreDefault.css">
+
+<script src="js/jinplace.js"></script>
+
+<style>
+html {
+    font-size: 100%;
+    overflow-y: scroll;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+body, form, textarea, button, input, select {
+  margin: 0 2px;
+  font-size: 16px;
+  font-family: arial, helvetica, sans-serif;
+}
+h1 {
+  font-size: 1.4em;
+  color: darkred;
+}
+h2 {
+  font-size: 1.2em;
+  color: #eb754a;
+}
+
+  /* Make lists consistent */
+ul, ol { margin-left: 0; }
+
+ol { padding-left: 2em; }
+ul {
+  list-style: square;
+  padding-left: 1em;
+}
+
+li {
+  padding: 3px 0;
+}
+li p {
+  padding:0;
+  margin:8px 0 0 0;
+}
+
+
+table {max-width: 900px;}
+th {
+  background-color: #eee;;
+}
+td {
+  background-color: #f5f5f5;
+}
+.editable-display-box {
+  background: white;
+  padding: 10px;
+  margin: 10px;
+}
+
+.editable {
+  border-bottom: 1px dashed #84ae84;
+}
+
+#page {
+  max-width: 900px;
+  margin: 0 auto 0 auto;
+}
+.demo {
+  overflow: hidden;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;;
+  margin-bottom: 10px;
+  clear: both;
+}
+.description {
+  overflow: hidden;
+}
+.example {
+  padding: 2px;
+  background-color: #ccd6da;
+}
+.try-it {
+  background-color: #ccd6da;
+  padding-bottom: 20px;
+}
+.try-it > p, .try-it > h2 {
+  margin-left: 10px;;
+}
+.description > p { margin-right: 10px;}
+.warn {
+  color: #ac0000;
+}
+input.short {
+  width: 8em;
+}
+.button {
+  display: inline;
+  font-size: 13px;
+  padding: 2px 10px;
+  margin: 0 0 0 3px;
+  border: solid 1px #eee;
+  color: #000000;
+  background: #98b095;
+  text-decoration: none;
+  cursor: pointer;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  background: -webkit-linear-gradient(top, #bbdcb6, #a0b0a0);
+  background: -moz-linear-gradient(top, #bbdcb6, #a0b0a0);
+  background: -ms-linear-gradient(top, #bbdcb6, #a0b0a0);
+  background: -o-linear-gradient(top, #bbdcb6, #a0b0a0);
+}
+
+@media all and (min-width: 1270px) {
+  #page {
+    max-width: 1250px;
+    width: 1250px;
+  }
+
+  .description {
+    float: left;
+    width: 900px;
+  }
+
+  .example {
+    margin-right: 20px;
+  }
+
+  .try-it {
+    float: left;
+    width: 350px;
+    padding-bottom: 1000px;
+    margin-bottom: -1000px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+<div id="page">
+
+<h1>A demo and test of the jinplace jquery plugin</h1>
+<div id="invalid" class="warn">
+  Error: Something has gone wrong and at least one of the required javascript libraries has not loaded.
+  Please check this before going further.
+</div>
+<!--[if lte IE 8]>
+<div class="warn">
+  Jinplace is fully supported on IE6-8.  This demo page however, not so much...
+  It does work but will look a little or a lot better in a modern browser.
+</div>
+<![endif]-->
+
+<p>In this demo there is no actual communication with a remote server.
+Instead all load and save operations take place on a mini database within the
+page itself.</p>
+
+<table>
+<caption>The database</caption>
+<tr>
+  <th>Object</th>
+  <th>First name</th>
+  <th>Last name</th>
+  <th>Favourites</th>
+  <th>Direction</th>
+</tr>
+<tr>
+  <td>person</td>
+  <td><span data-bind="text: person.firstname"></span>
+  <td><span data-bind="text: person.lastname"></span>
+  <td> <div style="width: 200px" data-bind="text: person.favourites"></div>
+  <td><span data-bind="text: person.direction"></span>
+</tr>
+<tr>
+  <td>person2</td>
+  <td><span data-bind="text: person2.firstname"></span>
+  <td><span data-bind="text: person2.lastname"></span>
+  <td> <div style="width: 200px" data-bind="text: person2.favourites"></div>
+  <td><span data-bind="text: person2.direction"></span>
+</tr>
+</table>
+
+<div id="example-input" class="demo">
+<div class="description">
+<h2>Simple text input field</h2>
+First example is a straightforward text input. Click on the underlined
+text to modify it.
+<ul>
+  <li>The url to post to is supplied.</li>
+  <li>Clicking outside the edit field submits the data</li>
+  <li>Hiting return normally submits the data too</li>
+</ul>
+
+<div class="example">
+  Firstname &lt;span
+    class="editable"
+    data-url="/internal/person/firstname">John&lt;/span>
+
+  &lt;!-- This will set up all edit fields that have class 'editable' on the page -->
+  &lt;!-- So it will only be shown in this example -->
+  &lt;script>
+    $('.editable').jinplace();
+  &lt;/script>
+</div>
+</div>
+
+<div class="try-it">
+  <p>Click on the name to edit
+</div>
+</div>
+
+<div id="example-textarea" class="demo">
+<div class="description">
+<h2>Using a textarea</h2>
+By default you get a normal text input. To get a textarea, then you need to set the
+type to <em>textarea</em>.
+<ul>
+  <li>Set <em>data-type</em> to <kbd>textarea</kbd></li>
+  <li>Everything else is the same as for regular inputs</li>
+</ul>
+<div class="example">
+
+  &lt;div class="editable"
+    data-type="textarea" data-url="/internal/person/favourites">
+    Wild geese that fly with the moon on their wings
+  &lt;/div>
+
+  &lt;!-- Don't forget $('.editable').jinplace(); ... see above -->
+</div>
+</div>
+
+<div class="try-it">
+  <p>Click textarea, modify and click outside it.</p>
+</div>
+</div>
+
+<div id="example-select" class="demo">
+<div class="description">
+<h2>Using a select dropdowm</h2>
+You can also have a list of choices with a select list.
+In this case you must supply the list of possible choices in the <b>data-data</b>
+attribute.
+<ul>
+  <li>Set type to 'select'</li>
+  <li>The data <b>must</b> be given.</li>
+  <li>The data is a JSON string.</li>
+</ul>
+<p>The JSON would normally be generated when the page is built.
+<div class="example">
+  Direction:
+  &lt;span class="editable" data-type="select" data-url="/internal/person/direction"
+        data-data='[["E", "East"], ["W", "West"]]'>East&lt;/span>
+
+</div>
+</div>
+
+<div class="try-it">
+  <p>Click to enable the select box.</p>
+</div>
+</div>
+
+<div id="example-ok" class="demo">
+<div class="description">
+<h2>With ok button</h2>
+You can add an OK button which must be clicked to accept the change.
+<ul>
+  <li>Adds an OK button that is clicked to submit the data.
+  <li>The text on the button is set to your value.
+  <li>Clicking outside the field, cancels
+</ul>
+
+<div class="example">
+  Lastname &lt;span class="editable"
+                 data-url="/internal/person/lastname"
+                 data-ok-button="Go">Smith&lt;/span>
+
+</div>
+</div>
+
+<div class="try-it">
+  <p>Editing field and click the "Go" button.</p>
+</div>
+</div>
+
+<div id="example-ok-cancel" class="demo">
+<div class="description">
+<h2>With ok and cancel button</h2>
+You can also add a cancel button, again with the text that you specify.
+<ul>
+  <li>Adds an OK button that is clicked to submit the data.
+  <li>Adds a cancel button that is clicked to abandon the edit.
+  <li>The text on the buttons are set to your values.
+  <li>Clicking outside the field does nothing.
+</ul>
+<p>This is particularly useful for large text areas where it is easy
+to lose a lot of work it you accidentally lose focus.</p>
+
+<div class="example">
+  Some of their favourite things
+  &lt;div class="editable"
+       data-url="/internal/person/favourites"
+       data-type="textarea"
+       data-ok-button="OK"
+       data-cancel-button="Cancel">
+    Silver white winters that melt into springs
+  &lt;/div>
+
+</div>
+</div>
+
+<div class="try-it">
+  Click OK to accept changes, Cancel to throw them away.
+</div>
+</div>
+
+<div id="example-activator" class="demo">
+<div class="description">
+<h2>Separate activation button</h2>
+You can have a separate button to click to start editing,
+rather that just clicking on the text.
+Any element can be used.
+<ul>
+  <li>Pass the css selector of the edit element in activator.
+  <li>Clicking the text no longer starts editing (unless
+    that element is included in the selector!)
+  <li>The data-input-class sets the class that will be applied to the input field</li>
+</ul>
+<div class="example">
+  Firstname:
+  &lt;span class="editable"
+        data-url="/internal/person/firstname"
+        data-activator="#edit-activator"
+        data-input-class="short"
+      >John&lt;/span>
+
+  &lt;span id="edit-activator" class="button">Edit&lt;/span>
+</div>
+</div>
+
+<div class="try-it">
+  <p>Click on the "edit" button to start. Clicking on the field does
+  not activate the edit controls.</p>
+</div>
+</div>
+
+<div id="example-form" class="demo">
+<div class="description">
+<h2>Full form with settings.</h2>
+<p>As well as configuring by using data attributes on the html elements, you can also
+configure during the .jinplace() call in the usual jQuery manner.
+You can of course use a mixture of both as you see fit.
+<ul>
+  <li>The url is set, so it is the same for all fields</li>
+  <li>The field to set is determined by the data-attribute</li>
+  <li>The nil setting is what is shown when the field is blank</li>
+  <li>The data-nil setting can be given on the html element to override the
+  general one.</li>
+</ul>
+<p>There are several more settings and most of them can be used on either the html element
+or in the call to .jinplace().
+<div class="example">
+  &lt;p>Firstname: &lt;span class="editable2" data-attribute="firstname">Mary&lt;/span>
+
+  &lt;p>Lastname:  &lt;span class="editable2" data-attribute="lastname">Jones&lt;/span>
+
+  &lt;p>Direction:  &lt;span class="editable2" data-type="select"
+                       data-data='[["N","North"],["S","South"],["E","East"],["W","West"]]'
+                       data-attribute="direction">West&lt;/span>
+
+  &lt;p>Favourites:
+  &lt;div class="editable2" data-type="textarea" data-attribute="favourites"
+      data-nil="Click to add">
+  &lt;/div>
+
+  &lt;script>
+    $('.editable2').jinplace({
+      url: '/internal/person2',
+      nil: '[Click]'
+    });
+  &lt;/script>
+</div>
+</div>
+
+<div class="try-it">
+  <p>All the fields can be edited and viewed in the person2 row at the top of
+  this page.</p>
+</div>
+
+</div>
+
+<div id="example-load" class="demo">
+<div class="description">
+<h2>Load data from server.</h2>
+<p>Sometimes you want to edit a different version of the text than the one that is
+displayed.
+The canonical example of this is in wiki text where you need to edit the plain
+text version, but display the html version of the page.
+<p>There are two ways of doing this</p>
+<ul>
+  <li>But using the data-data attribute</li>
+  <li>By using the data-loadurl attribute</li>
+  <li>Using the loadurl config setting</li>
+</ul>
+<ul>
+  <li>The loadurl config setting is used</li>
+  <li>There is no data-data attribute needed, even on the select box.</li>
+</ul>
+
+<div class="example">
+  &lt;p>Firstname: &lt;span class="editable2" data-attribute="firstname">Mary&lt;/span>
+
+  &lt;p>Lastname:  &lt;span class="editable2" data-attribute="lastname">Jones&lt;/span>
+
+  &lt;p>Direction:  &lt;span class="editable2" data-type="select"
+                       data-attribute="direction">West&lt;/span>
+
+  &lt;p>Favourites:
+  &lt;div class="editable2" data-type="textarea" data-attribute="favourites"
+      data-nil="Click to add">
+  &lt;/div>
+
+  &lt;script>
+    $('.editable2').jinplace({
+      url: '/internal/person2',
+      loadurl: '/internal/person2'
+    });
+  &lt;/script>
+</div>
+</div>
+
+<div class="try-it">
+<p>When you click to edit, the edit text will be fetched from the server.
+You can view the results of your edits in the person2 row at the top
+of this page.</p>
+</div>
+
+</div>
+
+<!-- Start of scripts -->
+<script>
+// Just in case there is no console...
+if (!window.console) {
+  var console = {
+    log: function () {
+      var a = arguments;
+    }
+  }
+}
+
+$(function() {
+  // Internal 'server' to keep track of the data that is submitted.
+
+  // Our database...
+  var db = {
+    person: {
+      firstname: ko.observable('John'),
+      lastname: ko.observable('Smith'),
+      favourites: ko.observable('Wild geese that fly with the moon on their wings'),
+      direction: ko.observable('E')
+    },
+
+    person2: {
+      firstname: ko.observable('Mary'),
+      lastname: ko.observable('Jones'),
+      favourites: ko.observable(''),
+      direction: ko.observable('W')
+    },
+
+    allowedDirections: [
+      ['N', 'North'], ['NW', 'North West'], ['NE', 'North East'],
+      ['E', 'East'], ['W', 'West'],
+      ['S', 'South'], ['SW', 'South West'], ['SE', 'South East']
+    ]
+  };
+  ko.applyBindings(db);
+
+  // Redefine the $.ajax call to keep the data local to the page.
+  $.ajax = function (url, data) {
+    var params = data.data || {};
+
+    console.log("The URL", url, data.type);
+    console.log("The data", data.type, params);
+
+    // The value that was passed in if this is a post
+    var value = params.value;
+
+    var m = url.match(new RegExp('/internal(?:/(\\w*)(?:/(\\w*))?)?'));
+    var object = m[1] || params.object;
+    var field = m[2] || params.attribute;
+
+    if (data.type == 'post') {
+      // set the database value
+      db[object][field](value);
+
+    } else {
+      if (field == 'direction') {
+        value = JSON.stringify(db.allowedDirections);
+      } else {
+        value = db[object][field];
+      }
+    }
+
+    var d = $.Deferred();
+    // Add any success callback
+    if (data.success)
+      d.done($.proxy(data.success, data.context));
+    // Add any failure callback
+    if (data.error)
+      d.fail($.proxy(data.error, data.context));
+
+    // We have the data already so resolve the promise and return it
+    d.resolveWith(data.context, [value]);
+    return d.promise();
+  };
+});
+</script>
+
+<script>
+// Arrange to syntax highlight everything and make real working code fromm the text of the
+// example.
+$(function() {
+  $('.example').each(function () {
+    var $this = $(this);
+
+    var exampleText = $this.text();
+    var syntax = $('<pre class="brush: js; html-script:true"></pre>');
+
+    // We need the actual text inside the example box so that it can be syntax highlighted,
+    // so we convert all '<' to entities.
+    syntax.html(exampleText.replace(/</g, '&lt;'));
+    $this.html(syntax);
+
+    // Parse the example into html and place it in the try it out column. Voila guaranteed to
+    // be the same as the visible example with no repetition.
+    var html = $.parseHTML(exampleText, null, true);
+    var try_it = $this.parent().parent().find('.try-it');
+
+    var heading = $('<h2>Try it out</h2>');
+    try_it.prepend(heading);
+
+    var dbox = $('<div class="editable-display-box"/>');
+    dbox.html(html);
+    try_it.append(dbox);
+  });
+
+  $('.editable').jinplace();
+});
+</script>
+<!--[if gt IE 8]>-->
+<script>
+  $(function() {
+    SyntaxHighlighter.all();
+  });
+</script>
+<!--<![endif]-->
+<script>
+   // If we got here without errors then hide the warning box.
+  if (jQuery && ko && jQuery.fn.jinplace) {
+    $('#invalid').hide();
+  }
+</script>
+</body>
