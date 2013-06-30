@@ -220,6 +220,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		 */
 		submitHandler: function (ev) {
 			ev.preventDefault();
+            ev.stopPropagation();
 			$.ajax(this.url, {
 				type: "post",
 				data: this.requestParams(true),
