@@ -222,8 +222,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		 * this routine, since it could be many different things.
 		 */
 		submitHandler: function (ev) {
-			ev.preventDefault();
-            ev.stopPropagation();
+            ev.preventDefault();
 			$.ajax(this.url, {
 				type: "post",
 				data: this.requestParams(true),
