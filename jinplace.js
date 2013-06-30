@@ -223,6 +223,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		 */
 		submitHandler: function (ev) {
             ev.preventDefault();
+            ev.stopPropagation();
 			$.ajax(this.url, {
 				type: "post",
 				data: this.requestParams(true),
@@ -326,14 +327,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		 */
 		var addButtons = function (jip, form) {
 			if (jip.okButton) {
-				var $button = $("<input>").attr("type", "submit").attr("value", jip.okButton);
-				$button.click($.proxy(jip.submitHandler, jip));
+				var $button = $("<input>").attr("type", "button").attr("value", jip.okButton);
+				$button.one('click', $.proxy(jip.submitHandler, jip));
 				form.append($button);
+                jip.okButtonField = $button;
 			}
 
 			if (jip.cancelButton) {
 				$button = $("<input>").attr("type", "button").attr("value", jip.cancelButton);
-				$button.click($.proxy(jip.cancelHandler, jip));
+				$button.one('click', $.proxy(jip.cancelHandler, jip));
 				form.append($button);
 			}
 		};
@@ -378,9 +380,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					// though!).
 					//
 					// If a click occurs the the blur is cancelled.
-					jip.element.on('click', 'input', function() {
-						clearTimeout(t);
-					});
+                    var f = jip.okButtonField;
+                    if (f) {
+                        f.on('click', function () {
+                            clearTimeout(t);
+                        });
+                    }
 				};
 
 				// Set the handler to our wrapper.
