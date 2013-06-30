@@ -179,7 +179,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				});
 
 			} else {
-				data = this.element.html();
+				data = $.trim(this.element.html());
 			}
 
 			return $.when(data).then(function(data) {
