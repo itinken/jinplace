@@ -366,6 +366,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 				var onBlur = function (ev) {
 					var t = setTimeout(function () {
+                        // in IE<=8 you cannot pass an event to a timeout function. We don't really
+                        // care about the event anyway, so just create a dummy one to pass along.
+                        ev = $.Event();
 						handler.call(jip, ev);
 					}, 200);
 
