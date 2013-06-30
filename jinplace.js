@@ -118,6 +118,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			this.activator
 					.off('click.jinplace')
 					.on('click.jinplace', $.proxy(this.clickHandler, this));
+
+            if (this.element.html() == "")
+                this.element.html(this.nil);
 		},
 
 		/**
