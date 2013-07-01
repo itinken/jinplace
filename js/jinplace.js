@@ -116,10 +116,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		bindElement: function() {
 			// Remove any existing handler we set and bind to the activation click handler.
 			this.activator
-					.off('click.jinplace')
-					.on('click.jinplace', $.proxy(this.clickHandler, this));
+					.off('click.jip')
+					.on('click.jip', $.proxy(this.clickHandler, this));
 
-            if (this.element.html() == "")
+            if ($.trim(this.element.html()) == "")
                 this.element.html(this.nil);
 		},
 
@@ -136,8 +136,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			// Turn off the activation handler, and disable any effect in case the activator
 			// was a button that might submit.
-			$(ev.currentTarget).off('click.jinplace')
-					.on('click.jinplace', function(ev) { ev.preventDefault();});
+			$(ev.currentTarget).off('click.jip')
+					.on('click.jip', function(ev) { ev.preventDefault();});
 
 			this.origValue = this.element.html();
 
