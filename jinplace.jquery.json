@@ -1,0 +1,27 @@
+{
+    "name": "jinplace",
+    "version": "0.9.1",
+    "title": "JinPlace",
+    "description": "jQuery plugin for in place editing",
+    "keywords": [
+        "inline",
+        "edit",
+		"form"
+    ],
+    "author": {
+        "name": "Steve Ratcliffe",
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://www.opensource.org/licenses/mit-license.php"
+        }
+    ],
+    "homepage": "https://bitbucket.org/itinken/jinplace",
+    "docs": "https://bitbucket.org/itinken/jinplace",
+    "download": "https://bitbucket.org/itinken/jinplace/downloads",
+	"demo": "https://bitbucket.org/itinken/jinplace/wiki/demo.html",
+    "dependencies": {
+        "jquery": ">=1.7"
+    }
+}

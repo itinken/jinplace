@@ -6,29 +6,45 @@
 This is a plugin for jQuery for in-place editing of data on the page.
 Html markup is used to annotate the elements to be edited.
 
+```javascript
+var j;
+j = 2 + 4;
+$('.editable').jinplace();
+```
+
 ### See also
 
 Some alternative solutions are
 
 * jeditable
-* best_in_place
+* best\_in\_place
 
 ## data attributes 
-<dl>
-<dt> data-type
-<dd>The input field type to be created which can be input, textarea or select.
-<dt> data-url
-<dt> data-data
-<dt> data-loadurl
-<dt> data-object-name
-<dt> data-attribute
-<dt> data-ok-button
-<dt> data-cancel-button
-<dt> data-input-class
-<dt> data-activator
-<dt> data-text-only
-<dt> data-nil
-</dl>
+
+**data-type** : The input field type to be created which can be
+input, textarea or select.
+
+**data-url** : The url to post the result to
+
+**data-data** : 
+
+**data-loadurl** : 
+
+**data-object-name** : 
+
+**data-attribute** : 
+
+**data-ok-button** : 
+
+**data-cancel-button** : 
+
+**data-input-class** : 
+
+**data-activator** : 
+
+**data-text-only** : 
+
+**data-nil** : 
 
 ## Features
 
