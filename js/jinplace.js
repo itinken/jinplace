@@ -71,7 +71,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	function JinPlace(element, options) {
 		this.element = $(element); // The editable element (often a span or div).
 
-		var opts = this.options = $.extend({},
+		var opts = $.extend({},
 				$.fn[pluginName].defaults,
 				options,
 				this.elementOptions(this.element));

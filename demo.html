@@ -512,9 +512,11 @@ $(function() {
 
     } else {
       if (field == 'direction') {
-        value = JSON.stringify(db.allowedDirections);
+        var dir = $.extend({}, db.allowedDirections);
+        dir.selected = db[object][field]();
+        value = JSON.stringify(dir);
       } else {
-        value = db[object][field];
+        value = db[object][field]();
       }
     }
 
