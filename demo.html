@@ -88,11 +88,15 @@ td {
   overflow: hidden;
 }
 .example {
-  padding: 2px;
-  background-color: #ccd6da;
+  padding: 1px;
+  background-color: #dce6ea;
+  white-space: pre;
+}
+.syntaxhighlighter {
+  margin: 2px 0;
 }
 .try-it {
-  background-color: #ccd6da;
+  background-color: #dce6ea;
   padding-bottom: 20px;
 }
 .try-it > p, .try-it > h2 {
@@ -541,7 +545,7 @@ $(function() {
 
     // We need the actual text inside the example box so that it can be syntax highlighted,
     // so we convert all '<' to entities.
-    syntax.html(exampleText.replace(/</g, '&lt;'));
+    syntax.text(exampleText);
     $this.html(syntax);
 
     // Parse the example into html and place it in the try it out column. Voila guaranteed to
@@ -560,9 +564,11 @@ $(function() {
   $('.editable').jinplace();
 });
 </script>
-<!--[if gt IE 8]>-->
+<!--[if gt IE 7]>-->
 <script>
   $(function() {
+    SyntaxHighlighter.defaults.toolbar = false;
+    SyntaxHighlighter.defaults['tab-size'] = 2;
     SyntaxHighlighter.all();
   });
 </script>
