@@ -59,7 +59,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		$.extend(this, opts);
 
         // Create an editor instance for this element.  This knows how to create
-        // the editing field as specified in formtype.
+        // the editing field as specified in type.
 		var editor = $.fn[pluginName].editors[opts.type];
         this.editor = $.extend({}, editorBase, editor);
 
@@ -83,7 +83,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             $.each(option_list, function(index, value) {
                 var att_name = "data-" + value.replace(/[A-Z]/g, upperToHyphenLower);
                 opts[value] = $el.attr(att_name);
-                console.log("attr", att_name);
             });
 
             opts.textOnly = opts.textOnly === true || opts.textOnly !== 'false';
@@ -288,7 +287,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	// These are the plugin defaults. You can override these if required.
 	$.fn[pluginName].defaults = {
 		url: document.location.pathname,
-		formType: "input",
+		type: "input",
 		textOnly: true,
 		nil: '[ --- ]'
 	};
@@ -466,7 +465,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		 * A regular text input field.  All methods inherit from the base 'class'.
 		 */
 		input: {
-            buttonsAllowed : true
+            buttonsAllowed: true
         },
 
         /**
