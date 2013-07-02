@@ -164,17 +164,22 @@ input.short {
 </div>
 <!--[if lte IE 8]>
 <div class="warn">
-  Jinplace is fully supported on IE6-8.  This demo page however, not so much...
-  It does work but will look a little or a lot better in a modern browser.
+  Jinplace and this demo are fully functional on IE6-8.
+  The demo does not look as good on the earlier browsers.
 </div>
 <![endif]-->
 
+<div class="description">
 <p>In this demo there is no actual communication with a remote server.
 Instead all load and save operations take place on a mini database within the
-page itself.</p>
+page itself.
+As you work through the examples and make changes they will appear in
+the table below.
+</p>
+</div>
 
 <table>
-<caption>The database</caption>
+<caption>The database. See your changes here.</caption>
 <tr>
   <th>Object</th>
   <th>First name</th>
@@ -197,6 +202,7 @@ page itself.</p>
   <td><span data-bind="text: person2.direction"></span>
 </tr>
 </table>
+<p>
 
 <div id="example-input" class="demo">
 <div class="description">
@@ -243,7 +249,6 @@ type to <em>textarea</em>.
     Wild geese that fly with the moon on their wings
   &lt;/div>
 
-  &lt;!-- Don't forget $('.editable').jinplace(); ... see above -->
 </div>
 </div>
 
@@ -290,6 +295,7 @@ You can add an OK button which must be clicked to accept the change.
 <div class="example">
   Lastname &lt;span class="editable"
                  data-url="/internal/person/lastname"
+                 data-input-class="short"
                  data-ok-button="Go">Smith&lt;/span>
 
 </div>
@@ -327,7 +333,7 @@ to lose a lot of work it you accidentally lose focus.</p>
 </div>
 
 <div class="try-it">
-  Click OK to accept changes, Cancel to throw them away.
+  <p>Click OK to accept changes, Cancel to throw them away.
 </div>
 </div>
 
@@ -415,13 +421,9 @@ The canonical example of this is in wiki text where you need to edit the plain
 text version, but display the html version of the page.
 <p>There are two ways of doing this</p>
 <ul>
-  <li>But using the data-data attribute</li>
+  <li>By using the data-data attribute</li>
   <li>By using the data-loadurl attribute</li>
   <li>Using the loadurl config setting</li>
-</ul>
-<ul>
-  <li>The loadurl config setting is used</li>
-  <li>There is no data-data attribute needed, even on the select box.</li>
 </ul>
 
 <div class="example">
@@ -448,6 +450,7 @@ text version, but display the html version of the page.
 
 <div class="try-it">
 <p>When you click to edit, the edit text will be fetched from the server.
+So the current (probably stale in this demo) text is disregarded.
 You can view the results of your edits in the person2 row at the top
 of this page.</p>
 </div>
@@ -571,7 +574,6 @@ $(function() {
   $('.editable').jinplace();
 });
 </script>
-<!--[if gt IE 7]>-->
 <script>
   $(function() {
     SyntaxHighlighter.defaults.toolbar = false;
@@ -579,7 +581,6 @@ $(function() {
     SyntaxHighlighter.all();
   });
 </script>
-<!--<![endif]-->
 <script>
    // If we got here without errors then hide the warning box.
   if (jQuery && ko && jQuery.fn.jinplace) {
