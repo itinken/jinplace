@@ -20,68 +20,47 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
- /**
- *
- * The list of attributes that can be supplied on the editable element.
- *
- * data-url: This is the url that the result will be posted to. The default is the current
- *     location.
- *
- * data-type: One of input, select, textarea. Determines the kind of input control that will
- * be created.  The default is 'input'.
- *
- * data-data: This is the data to be edited if different from the contents of the element. For
- *     select elements this is a json representation of the data '[[1, "First"], [2, "Second"]..]
- *     The default is to use the text within the element. For a select control this must be
- *     supplied.
- *
- * data-loadurl: Data is loaded from this url for editing. Same as data-data, except the data
- *     is obtained from a remote location.  This is useful when you have wikitext,
- *     this can load the original data so it can be edited. On submit the html formated text
- *     will be returned.  If data-data is also supplied then it will be used and this attribute
- *     will be ignored.
- *
- * data-object: The name of the object to be modified. If given it is sent as part of the post
- *     request to the server.
- *
- * data-attribute: The name of the field in the object to be modified. It is sent to the
- *     server on update.
- *
- * data-text-only: if true (default) data will be treated as plain text.  Any html returned
- *     from the server will be displayed as is (ie with html escaped). HTML will not be
- *     submitted to the server.  The default is true.  When set to false, make sure there
- *     are no security issues.
- *
- * data-ok-button: An OK button is added that is used to submit the value.  The value of this
- *     attribute is the button text.
- *
- * data-cancel-button: Adds a cancel button with the given text.
- *
- * data-input-class: This css class will be attached to the input element that is created.
- *
- * data-activator: The id of the element to bind the click event to. If not given then clicking
- *     on the element itself activates the editor.
- *
- */
+
 //noinspection JSUnnecessarySemicolon
 ; (function ($, window, document, undefined) {
 	var pluginName = "jinplace";
 
+    var option_list = ['type',
+                       'url',
+                       'data',
+                       'loadurl',
+                       'object',
+                       'attribute',
+                       'okButton',
+                       'cancelButton',
+                       'inputClass',
+                       'activator',
+                       'textOnly',
+                       'nil'
+    ];
+
 	// The actual plugin constructor
 	function JinPlace(element, options) {
-		this.element = $(element); // The editable element (often a span or div).
+        var $el = this.element = $(element); // The editable element (often a span or div).
 
-		var opts = $.extend({},
+        var elementOptions = this.elementOptions($el);
+
+        var act = elementOptions.activator || element;
+        elementOptions.activator = $(act);
+
+        // So we have 1) options defined in defaults, 2) passed into the plugin, 3) set
+        // on the element. Combine all these together.
+        var opts = $.extend({},
 				$.fn[pluginName].defaults,
 				options,
-				this.elementOptions(this.element));
+                elementOptions);
 
 		// TMP add all options to 'this'
 		$.extend(this, opts);
 
         // Create an editor instance for this element.  This knows how to create
         // the editing field as specified in formtype.
-		var editor = $.fn[pluginName].editors[opts.formType];
+		var editor = $.fn[pluginName].editors[opts.type];
         this.editor = $.extend({}, editorBase, editor);
 
 		this.bindElement();
@@ -97,22 +76,17 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		// Options are set using data- attributes of the element.
 		elementOptions: function ($el) {
 			var opts = {};
-			opts.formType = $el.attr("data-type");
-			opts.url = $el.attr("data-url");
-			opts.data = $el.attr("data-data") || $el.attr("data-collection");
-			opts.loadurl = $el.attr("data-loadurl");
-			opts.objectName = $el.attr("data-object-name");
-			opts.attribute = $el.attr("data-attribute");
-			opts.okButton = $el.attr("data-ok-button");
-			opts.cancelButton = $el.attr("data-cancel-button");
-			opts.inputClass = $el.attr("data-input-class");
-			opts.activator = $el.attr("data-activator") || $el;
-			opts.activator = $(opts.activator);
-			var only = $el.attr("data-text-only");
-			if (only)
-				opts.textOnly = only != 'false';
-			opts.nil = $el.attr("data-nil");
+            function upperToHyphenLower(match) {
+                return '-' + match.toLowerCase();
+            }
 
+            $.each(option_list, function(index, value) {
+                var att_name = "data-" + value.replace(/[A-Z]/g, upperToHyphenLower);
+                opts[value] = $el.attr(att_name);
+                console.log("attr", att_name);
+            });
+
+            opts.textOnly = opts.textOnly === true || opts.textOnly !== 'false';
 			return opts;
 		},
 
@@ -178,7 +152,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          */
 		requestParams: function(isSend) {
 			var params = { "id": this.element.id,
-				"object": this.objectName,
+				"object": this.object,
 				attribute: this.attribute
 			};
 
@@ -315,14 +289,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	$.fn[pluginName].defaults = {
 		url: document.location.pathname,
 		formType: "input",
-		data: null,
-		loadurl: null,
-		objectName: undefined,
-		attribute: undefined,
-		activator: null,
-		inputClass: '',
-		okButton: null,
-		cancelButton: null,
 		textOnly: true,
 		nil: '[ --- ]'
 	};
@@ -427,7 +393,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     };
 
     /**
-     * This is the prototype for an editor plugin.
+     * This is the interface of an editor function. Plugins need only redefine the methods
+     * or data that are appropriate.
      *
      * @type {{makeField: Function, activate: Function, submitEvents: Array, displayValue: Function}}
      */
@@ -495,32 +462,16 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     // The field editors can be overridden or added to
 	$.fn[pluginName].editors = {
 
-		// Now follows the editing objects for each input type.
-		//
-		// Each object has the following methods.
-		//
-		// activate(data): Create the editing field and replace the original text with it.
-        // @param element The original text element that we are making editable.
-		// @param data This is the text or data that the editing field must be initialised
-        //             with.
-        // @return The editing field as a jquery element.
-		//
-		// getDisplay(jip): (Optional) Get the displayable value of the field. If this
-		// method does not exist then inputField.val() will be used.
-		//    @param jip The JinPlace object.
-        //
-        // The object will also be initialised with its own private context
-        // area as this.context. The editor can store anything it likes in there.
-        //
-
 		/**
-		 * A regular text input field.
+		 * A regular text input field.  All methods inherit from the base 'class'.
 		 */
 		input: {
             buttonsAllowed : true
         },
 
-		// A textarea field
+        /**
+         * A multi-line text area field.
+         */
         textarea: {
             buttonsAllowed: true,
 
@@ -545,8 +496,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 		/**
 		 * A selection.  This is slightly more complex as we have to pass in the possible
-		 * values so that one can be selected.  The getDisplay() method converts from
-		 * the option value to the option text that is displayed.
+		 * values so that one can be selected.
          */
         select: {
 			makeField: function (element, data) {
