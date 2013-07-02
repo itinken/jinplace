@@ -511,12 +511,17 @@ $(function() {
       db[object][field](value);
 
     } else {
+      value = db[object][field]();
+
       if (field == 'direction') {
-        var dir = $.extend({}, db.allowedDirections);
-        dir.selected = db[object][field]();
+        var dir = $.extend(true, [], db.allowedDirections);
+        $.each(dir, function(i, opt) {
+          if (opt[0] == value) {
+            opt[2] = 1;
+          }
+        });
         value = JSON.stringify(dir);
-      } else {
-        value = db[object][field]();
+        console.log("choices", value);
       }
     }
 

@@ -79,12 +79,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		// TMP add all options to 'this'
 		$.extend(this, opts);
 
-		this.editor = $.fn[pluginName].editors[opts.formType];
+        // Create an editor instance for this element.  This knows how to create
+        // the editing field as specified in formtype.
+		var editor = $.fn[pluginName].editors[opts.formType];
+        this.editor = $.extend({}, editorBase, editor);
 
 		this.bindElement();
 	}
 
-	JinPlace.prototype = {
+    JinPlace.prototype = {
 
 		/**
 		 * Get the options that are set on the editable element with the data-* attributes.
@@ -119,8 +122,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					.off('click.jip')
 					.on('click.jip', $.proxy(this.clickHandler, this));
 
-            if ($.trim(this.element.html()) == "")
-                this.element.html(this.nil);
+            // If there is no content, then we replace it with the empty indicator.
+            var $el = this.element;
+            if ($.trim($el.html()) == "")
+                $el.html(this.nil);
 		},
 
 		/**
@@ -139,14 +144,38 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			$(ev.currentTarget).off('click.jip')
 					.on('click.jip', function(ev) { ev.preventDefault();});
 
-			this.origValue = this.element.html();
+            var self = this,
+                    editor = self.editor;
 
-			var self = this;
-			this.fetchData().done(function(data) {
-				self.editor.activate(self, data);
+            // Save original for use when cancelling.
+			self.origValue = this.element.html();
+
+			self.fetchData().done(function(data) {
+
+				var field = editor.makeField(self.element, data);
+                field.addClass(self.inputClass);
+
+                var form = createForm(self, field, editor.buttonsAllowed);
+
+                // Add the form part of the document
+                self.element.html(form);
+
+                // Now we can setup handlers and focus or otherwise activate the field.
+                setupInput(self, form, field);
+                $.each(editor.submitEvents, function (index, value) {
+                    form.on(value, $.proxy(self.submitHandler, self));
+                });
+
+                editor.activate(field);
 			});
 		},
 
+        /**
+         * Get the parameters that will be sent in the ajax call to the server.
+         * Called for both the url and loadurl cases.
+         * @param isSend True if we are sending. (not for loadurl).
+         * @returns {{id: string, object: *, attribute: *}}
+         */
 		requestParams: function(isSend) {
 			var params = { "id": this.element.id,
 				"object": this.objectName,
@@ -210,6 +239,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		 */
 		cancel: function() {
 			this.element.html(this.origValue);
+
+            // Rebind the element for the next time
 			this.bindElement();
 		},
 
@@ -253,14 +284,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		 * @param data The data to be displayed.
 		 */
 		setContent: function(data) {
-			if (this.editor.getDisplay)
-				data = this.editor.getDisplay(this);
+            var element = this.element,
+                    editor = this.editor;
+
+            // Do any conversion from the data format to the display format
+            data = editor.displayValue(data);
 			if (!data)
 				data = this.nil;
+
 			if (this.textOnly) {
-				this.element.text(data);
+				element.text(data);
 			} else {
-				this.element.html(data);
+				element.html(data);
 			}
 		}
 
@@ -283,7 +318,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		data: null,
 		loadurl: null,
 		objectName: undefined,
-		attributeName: undefined,
+		attribute: undefined,
 		activator: null,
 		inputClass: '',
 		okButton: null,
@@ -292,199 +327,270 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		nil: '[ --- ]'
 	};
 
-	// The field editors can be overridden or added to
-	$.fn[pluginName].editors = (function() {
-		/**
-		 * Create a form for the editing area.  The input element is added and if buttons
-		 * are required then they are added. Event handlers are set up.
-		 *
-		 * @param jip The JinPlace object.
-		 * @param inputField The newly created input field.
-		 * @param {boolean} [buttons] True if buttons can be added.  Whether buttons really are added
-		 * depends on the options and data-* attributes.
-		 * @returns {jQuery} The newly created form element.
-		 */
-		var createForm = function(jip, inputField, buttons) {
-			jip.inputField = inputField;
+    /**
+     * Create a form for the editing area.  The input element is added and if buttons
+     * are required then they are added. Event handlers are set up.
+     *
+     * @param jip The JinPlace object.
+     * @param inputField The newly created input field.
+     * @param {boolean} [buttons] True if buttons can be added.  Whether buttons really are added
+     * depends on the options and data-* attributes.
+     * @returns {jQuery} The newly created form element.
+     */
+    var createForm = function (jip, inputField, buttons) {
+        jip.inputField = inputField;
 
-			var form = $("<form>")
-					.attr("style", "display: inline;")
-					.attr("action", "javascript:void(0);")
-					.append(inputField);
+        var form = $("<form>")
+                .attr("style", "display: inline;")
+                .attr("action", "javascript:void(0);")
+                .append(inputField);
 
-			if (buttons)
-				addButtons(jip, form);
+        if (buttons)
+            addButtons(jip, form);
 
-			setupInput(jip, form, inputField);
-			return form;
-		};
+        return form;
+    };
 
-		/**
-		 * Add any requested buttons to the output.
-		 *
-		 * @param jip The main JinPlace object.
-		 * @param form The form that is being created.
-		 */
-		var addButtons = function (jip, form) {
-			if (jip.okButton) {
-				var $button = $("<input>").attr("type", "button").attr("value", jip.okButton);
-				$button.one('click', $.proxy(jip.submitHandler, jip));
-				form.append($button);
-                jip.okButtonField = $button;
-			}
+    /**
+     * Add any requested buttons to the output.
+     *
+     * @param jip The main JinPlace object.
+     * @param form The form that is being created.
+     */
+    var addButtons = function (jip, form) {
+        if (jip.okButton) {
+            var $button = $("<input>").attr("type", "button").attr("value", jip.okButton);
+            $button.one('click', $.proxy(jip.submitHandler, jip));
+            form.append($button);
+            jip.okButtonField = $button;
+        }
 
-			if (jip.cancelButton) {
-				$button = $("<input>").attr("type", "button").attr("value", jip.cancelButton);
-				$button.one('click', $.proxy(jip.cancelHandler, jip));
-				form.append($button);
-			}
-		};
+        if (jip.cancelButton) {
+            $button = $("<input>").attr("type", "button").attr("value", jip.cancelButton);
+            $button.one('click', $.proxy(jip.cancelHandler, jip));
+            form.append($button);
+        }
+    };
 
-		/**
-		 * The form has been added to the DOM, set up the input to receive focus and events.
-		 *
-		 * If there are no button, then blur has to save.
-		 * If just OK button, then blur cancels
-		 * If both buttons, then use the buttons to save and cancel only (safest option for areas).
-		 *
-		 * @param jip The main JinPlace object.
-		 * @param $form The form we are creating.
-		 * @param $field The field within the form.
-		 */
-		var setupInput = function(jip, $form, $field) {
-			jip.element.html($form);
+    /**
+     * The form has been added to the DOM, set up the input to receive focus and events.
+     *
+     * If there are no button, then blur has to save.
+     * If just OK button, then blur cancels
+     * If both buttons, then use the buttons to save and cancel only (safest option for areas).
+     *
+     * @param jip The main JinPlace object.
+     * @param $form The form we are creating.
+     * @param $field The field within the form.
+     */
+    var setupInput = function (jip, $form, $field) {
+        /**
+         * A delayed blur handler.  When we click on a button, there will be a blur event
+         * from the field before the button click. Therefore we need to wait before calling
+         * the blur handler and cancel it if a click comes in first.
+         *
+         * @param handler The real blur handler that will be called.
+         */
+        var delayedBlur = function (handler) {
 
-			// Focus the field
-			$field.focus();
+            var onBlur = function (ev) {
+                var t = setTimeout(function () {
+                    // in IE<=8 you cannot pass an event to a timeout function. We don't really
+                    // care about the event anyway, so just create a dummy one to pass along.
+                    ev = $.Event();
+                    handler.call(jip, ev);
+                }, 200);
 
-			/**
-			 * A delayed blur handler.  When we click on a button, there will be a blur event
-			 * from the field before the button click. Therefore we need to wait before calling
-			 * the blur handler and cancel it if a click comes in first.
-			 *
-			 * @param handler The real blur handler that will be called.
-			 */
-			var delayedBlur = function(handler) {
+                // Hook up all input fields within the element. This will include all the
+                // buttons.  Also includes the text field, so you may be able to cancel
+                // an inadvertent blur by quickly clicking back in the text. (No guarantees
+                // though!).
+                //
+                // If a click occurs the the blur is cancelled.
+                var f = jip.okButtonField;
+                if (f) {
+                    f.on('click', function () {
+                        clearTimeout(t);
+                    });
+                }
+            };
 
-				var onBlur = function (ev) {
-					var t = setTimeout(function () {
-                        // in IE<=8 you cannot pass an event to a timeout function. We don't really
-                        // care about the event anyway, so just create a dummy one to pass along.
-                        ev = $.Event();
-						handler.call(jip, ev);
-					}, 200);
+            // Set the handler to our wrapper.
+            $field.on('blur', onBlur);
+        };
 
-					// Hook up all input fields within the element. This will include all the
-					// buttons.  Also includes the text field, so you may be able to cancel
-					// an inadvertent blur by quickly clicking back in the text. (No guarantees
-					// though!).
-					//
-					// If a click occurs the the blur is cancelled.
-                    var f = jip.okButtonField;
-                    if (f) {
-                        f.on('click', function () {
-                            clearTimeout(t);
-                        });
-                    }
-				};
+        if (!jip.okButton) {
+            delayedBlur(jip.submitHandler);
+        } else if (!jip.cancelButton) {
+            delayedBlur(jip.cancelHandler);
+        }
+    };
 
-				// Set the handler to our wrapper.
-				$field.on('blur', onBlur);
-			};
+    /**
+     * This is the prototype for an editor plugin.
+     *
+     * @type {{makeField: Function, activate: Function, submitEvents: Array, displayValue: Function}}
+     */
+    var editorBase = {
+        /**
+         * Are we allowed to automatically add buttons to the form. Set this to
+         * true for a text input where it might make sense.  They are only added
+         * if the user asks for them in any case.
+         */
+        buttonsAllowed: false,
 
-			if (!jip.okButton) {
-				delayedBlur(jip.submitHandler);
-			} else if (!jip.cancelButton) {
-				delayedBlur(jip.cancelHandler);
-			}
+        /**
+         * Make the editing field that will be added to the form. Editing field is
+         * a general term it could be a complex control or just a plain <input>.
+         *
+         * @param element The original element that we are going to edit.
+         * @param data The initial data that should be used to initialise the
+         * field.  For text inputs this will be just text, but for other types of
+         * input it is an object specific to that field.
+         * @returns The new field wrapped in a jquery object.
+         */
+        makeField: function (element, data) {
+            // This is an implementation for <input type="text">. You would almost
+            // always need to override this.
+            return $("<input>")
+                    .attr("type", "text")
+                    .val(data);
+        },
 
-			$form.submit($.proxy(jip.submitHandler, jip))
-		};
+        /**
+         * Activate the field. It is now part of the document and all handlers
+         * have been set up.  In other words we are ready to go.
+         *
+         * @param field The editing field.  Passed as a convenience so we don't have
+         * to save it.
+         */
+        activate: function (field) {
+            field.focus();
+        },
+
+        /**
+         * A list of events that the submit handler should be bound to.
+         */
+        submitEvents: ['submit'],
+
+        /**
+         * We are just about to remove the edit control and we have data returned from
+         * the server. This method converts the server form of the data into the on page
+         * value.
+         *
+         * For a text input this is just the same.
+         *
+         * For a select list, you may have [['1', 'blue'], ['2', 'green']]; if the server
+         * returns '2', then you return 'green' from this method.
+         * @param data The data as returned by the server which is to be used to populate
+         * the page after the edit control is removed.
+         * @returns {*} The data modified in any way that is appropriate.
+         */
+        displayValue: function (data) {
+            return data;
+        }
+    };
+
+
+    // The field editors can be overridden or added to
+	$.fn[pluginName].editors = {
 
 		// Now follows the editing objects for each input type.
 		//
 		// Each object has the following methods.
 		//
-		// activate(jip, el)  Create the editing field and replace the original text with it.
-		//   @param jip the JinPlace object
-		//   @param el the element that is being made editable.
+		// activate(data): Create the editing field and replace the original text with it.
+        // @param element The original text element that we are making editable.
+		// @param data This is the text or data that the editing field must be initialised
+        //             with.
+        // @return The editing field as a jquery element.
 		//
-		// getDisplay(jip)  (Optional) Get the displayable value of the field. If this
+		// getDisplay(jip): (Optional) Get the displayable value of the field. If this
 		// method does not exist then inputField.val() will be used.
 		//    @param jip The JinPlace object.
+        //
+        // The object will also be initialised with its own private context
+        // area as this.context. The editor can store anything it likes in there.
+        //
 
 		/**
 		 * A regular text input field.
 		 */
-		this.input = {
-			activate: function(jip, data) {
-				var field = $("<input>")
-						.attr("type", "input")
-						.addClass(jip.inputClass)
-						.val(data);
-				createForm(jip, field, true);
-			}
-		};
+		input: {
+            buttonsAllowed : true
+        },
 
 		// A textarea field
-		this.textarea = {
-			activate: function (jip, data) {
-				var el = jip.element,
-						width = el.width(),
-						height = el.height();
+        textarea: {
+            buttonsAllowed: true,
 
-				var field = $("<textarea>")
-						.addClass(jip.inputClass)
-						.css({
-							'min-width': width,
-							'min-height': height
-						})
-						.html(data);
+			makeField: function (element, data) {
+                var width = element.width(),
+                        height = element.height();
 
-				createForm(jip, field, true);
+                var field = $("<textarea>")
+                        .css({
+                            'min-width': width,
+                            'min-height': height
+                        })
+                        .html(data);
 
-				if (field.elastic)
-					field.elastic();
-			}
-		};
+
+                if (field.elastic)
+                    field.elastic();
+
+                return field;
+            }
+        },
 
 		/**
 		 * A selection.  This is slightly more complex as we have to pass in the possible
 		 * values so that one can be selected.  The getDisplay() method converts from
 		 * the option value to the option text that is displayed.
-		 */
-		this.select = {
-			activate: function (jip, data) {
-				var field = $("<select>").addClass(jip.inputClass),
-						choiceValues = $.parseJSON(data);
-				this.choices = choiceValues;
+         */
+        select: {
+			makeField: function (element, data) {
+                var field = $("<select>"),
+                        choices = $.parseJSON(data);
 
-				$.each(choiceValues, function(index, value) {
-					var opt = $("<option>").val(value[0]).html(value[1]);
-					if (value[1] == jip.element.text())
-						opt.attr("selected", "1");
-					field.append(opt);
-				});
+                var selected = false;
+                var elementChoice = null;
+                $.each(choices, function(index, value) {
+                    var opt = $("<option>").val(value[0]).html(value[1]);
+                    if (value[2]) {
+                        opt.attr("selected", "1");
+                        selected = true;
+                    }
+                    if (value[1] == element.text())
+                        elementChoice = opt;
+                    field.append(opt);
+                });
 
-				createForm(jip, field);
-				field.on('change', $.proxy(jip.submitHandler, jip));
-			},
+                // If we didn't get any indication of the selected element from the
+                // given data, then use the match we found with the element text.
+                if (!selected && elementChoice)
+                    elementChoice.attr("selected", "1");
 
-			getDisplay: function(jip) {
-				var val = jip.inputField.val(),
-						display = '';
-				$.each(this.choices, function(index, value) {
-					if (val == value[0]) {
-						display = value[1];
-						return false;
-					}
-					return true;
-				});
-				return display;
-			}
-		};
+                // Save the choices so we can decode the response.
+                this.choices = choices;
 
-		return this;
-	})();
+                return field;
+            },
+
+			submitEvents : ['change'],
+
+            displayValue: function(data) {
+                var display = '';
+                $.each(this.choices, function(index, value) {
+                    if (data == value[0]) {
+                        display = value[1];
+                        return false;
+                    }
+                    return true;
+                });
+                return display;
+            }
+        }
+	};
 })(jQuery, window, document);
 
