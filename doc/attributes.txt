@@ -1,0 +1,100 @@
+
+== HTML data attributes ==
+
+All fields on a page that you want to be editable can be marked
+up using HTML data-* attributes.
+The plugin uses these to set up the element so that it can be edited
+on the page and the value submitted to the server. 
+
+The simplest case would look something like this
+
+<pre code=html>
+  <span class="editable" data-url="/api/modify/188/name">Zoe</span>
+</pre>
+
+== HTML data attributes ==
+Here we have the complete list of data attributes that can be set.
+
+===data-url===
+The url to submit the form data to.
+The default is the same url as the page itself.
+
+===data-type===
+The type of form element to be created. Can be one of 'input' for a
+regular text input, 'select' for a select dropdown box, or 'textarea'
+for a multiline text area.  The default is 'input'.
+
+===data-data===
+If supplied this is the editable version of the text.
+In the case of a select edit control, it must be a JSON list of value, text pairs.
+
+===data-loadurl===
+If set then it is the url from which to load data.
+A GET http request is made to the 'loadurl' with the
+same parameters that would be sent on submit.
+The server returns data that is the initial value of the edit field.
+
+===data-ok-button===
+If set, then there will be an OK button next to the input or textarea
+field.  The text on the button will be the value of this option.
+By default this is not set and there will be no submit button.
+Data is submitted on blur.
+
+===data-cancel-button===
+If set, then there will be a cancel button next to the input or textarea
+field.  The text on the button will be the value of this option.
+By default this is not set and there will be no cancel button.
+
+===data-attribute===
+If set then this value will be sent to the server as part of the post data.
+It is intended to identify the field of a particular object that
+is being set, but you can of course use it however you like.
+
+===data-object===
+If set the this value will be sent to the server as part of the post data.
+It is intended to identify the object to be set, but you can interpret it
+how you like.
+
+===data-text-only===
+If set (which is the default) 
+then data will be displayed as text. That is to say '<p>' would display
+literally and not cause a paragraph break.
+If you disable it then the data received back from the server will
+be interpreted as html. You are responsible for making sure this
+is safe.
+
+===data-nil===
+This is the string that is used when there is no data in the
+field.
+The default value is '[ --- ]'
+
+===data-input-class===
+The input field will have this class.
+There is no default.
+
+== Config settings ==
+You can use any of the data attributes as a config setting when you
+call .jinplace(). The setting name is formed by removing the 'data-'
+prefix and changing hyphenated words with camel case words. So 
+'data-attribute' is 'attribute' and 'data-text-only' is 'textOnly'.
+
+=== How to set ===
+An object can be passed to .jinplace() containing the desired
+settings.
+
+<pre code=js>
+$('editable').jinplace({
+	url: '/api/modify',
+	textOnly: false,
+	nil: 'Click to edit',
+	okButton: 'OK',
+	cancelButton: 'Cancel'
+});
+</pre>
+
+You can also set defaults that will apply to all .jinplace() calls.
+
+<pre code=js>
+$.fn.jinplace.defaults.textOnly = false;
+</pre>
+

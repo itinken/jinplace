@@ -4,3 +4,5 @@ syntax:glob
 *.min.js
 *.min.js.?
 Makefile
+.*.sw?
+tests

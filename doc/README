@@ -1,6 +1,6 @@
-# jinplace jquery plugin 
+= jinplace jquery plugin =
 
-## Description
+==Description==
 
 This is a plugin for jQuery for in-place editing of data on the page.
 The intended way to use it is for the editable fields on the web
@@ -11,41 +11,40 @@ it finds all the fields that have been marked as editable.
 Alternatively you can specify all options in the plugin call, or a
 mixture of the two depending on your needs.
 
-## About 
+== About ==
 
-* [Live demo](https://bitbucket.org/itinken/jinplace/wiki/demo.html)
-* [Downloads](https://bitbucket.org/itinken/jinplace/downloads)
-* [Source](https://bitbucket.org/itinken/jinplace/src)
-* [Documentation](https://bitbucket.org/itinken/jinplace/wiki/Documentation)
+* [https://bitbucket.org/itinken/jinplace/wiki/demo.html Live demo]
+* [https://bitbucket.org/itinken/jinplace/downloads Downloads]
+* [https://bitbucket.org/itinken/jinplace/src Source]
+* [https://bitbucket.org/itinken/jinplace/wiki/Documentation Documentation]
 
-## Basic usage 
+== Basic usage ==
 
 Basic usage is to first inlucde the javascript file
 
-```html
+<pre code=html>
   <script src="js/jinplace.js"></script>
-```
+</pre>
 
 Then mark up the elements that you wish to be editable using
 the jinplace data-* attributes.
 At minimum you need only add a suitable class (or id) and the url to submit the data to.
 
-```html
+<pre code=html>
   <span class="editable" data-url="/api/modify/987/name">Fred</span>
-```
+</pre>
 
 Finally initialise the plugin selecting all the elements you want
 to be editable.
 
-```javascript
+<syntaxhighlight lang="javascript">
  $('.editable').jinplace();
-```
+</syntaxhighlight>
 
-For many more examples see the [online demo](/xxx) and the [documentation](/..)
+For many more examples see the [/xxx online demo] and the [/.. documentation]
 
-### See also
-
+===See also===
 Some alternative solutions are
+* [http://www.appelsiini.net/projects/jeditable jeditable]
+* [https://github.com/bernat/best_in_place best_in_place]
 
-* [jeditable](http://www.appelsiini.net/projects/jeditable)
-* [best\_in\_place](https://github.com/bernat/best_in_place)

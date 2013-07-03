@@ -1,0 +1,74 @@
+
+= Sending and receiving data=
+==Sending the modified value==
+when editing has finished, the new value is sent to the
+server using an ajax call.
+
+The new value is sent as a parameter named 'value' using POST to the url specified.
+There may be additional parameters sent as follows.
+
+* If the element has an id then it will be sent with parameter name
+'id'
+
+* If 'data-attribute' is set (or the config setting 'attribute' is
+present) then its value is sent under the parameter name 'attribute'.
+
+* If 'data-object' is set (or the 'object' setting), then its value
+is sent under the parameter name 'object'.
+
+The returned value is used to set the text within
+the editable element and replace the editing control.
+As such if the editing format and the display format
+differ, then it is the display format that is returned.
+
+For example, for a select dropdown, it will be the text of the
+selected option.
+
+== Loading data ==
+
+When 'data-loadurl' is used, then a GET call is made to the server
+with exactly the same parameters as in the previous section, except
+that there is no 'value' parameter to send.
+
+The value returned is used to initialise the editing field, and so
+it must be in its editing format if that differs from the display
+format.
+
+== Data formats for each input type ==
+
+=== input ===
+Takes text and so there is normally nothing special to do, the editing
+and display formats are the same.
+
+An exception might be is cases such as when the data is held in
+markdown or a variety of  wiki text.
+In this case you might want to edit the wiki text, but display html.
+So on saving the changed wiki text, the server will format to html
+and return that as the display text. To display html as formatted
+areas, rather than literal html (with the angle brackets) you need
+to set textOnly to false.
+
+=== textarea ===
+The exact same considerations as for 'input'.
+
+=== select ===
+The display format is the text of the selected option.
+However the editing format is a json list of all the possible
+options so that a dropdown can be constructed.
+
+The option list is formatted as in this example
+
+<pre code=json>
+[['1', 'Red'], ['2', 'Green', 1], ['3', 'Blue']]
+</pre>
+
+Above there are three options 1, 2 and 3, with the values 'Red',
+'Green' and 'Blue'. The value 2/Green is currently selected.
+
+If none of the options are marked as selected then it will
+attempt to work it out by looking at the existing text in
+the element.
+
+When a selection is made to say, Blue, then the value '3' will be
+posted to the server, and the display value 'Blue' will be returned
+in the normal case.

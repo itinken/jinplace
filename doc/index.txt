@@ -1,0 +1,39 @@
+
+= Documentation for jinplace =
+==Introduction==
+
+jinplace is a jQuery plugin that is used to make sections of text
+on a page editable directly from the page.
+Editing starts by clicking on the text. It then turns into an
+input field where the new text can be typed.
+Clicking outside the field will submit the new new text and once
+a reply has been received, the input field is removed and the
+new text replaces it.
+
+That is the basic flow, but there are a number of options to change
+this. You can have explicit OK and cancel buttons and a separate
+button to start editing for example.
+
+==Include javascript files==
+As this is a jQuery plugin, you must include a version of jQuery
+(versions 1.7+ should work) first.
+
+Download the latest version of this plugin
+[https://bitbucket.org/itinken/jinplace/downloads/jinplace-0.9.1.min.js jinplace-0.9.1.min.js].
+Go to the [https://bitbucket.org/itinken/jinplace/downloads download directory] for
+other versions or for an un-minified debug/development version of the file and source
+distributions.
+
+== Mark up the page ==
+
+You should read this section in conjunction with
+the [https://bitbucket.org/itinken/inplace/wiki/demo.html demo]
+which is structured like a mini tutorial for some of the
+basic mark up attributes.
+
+<pre code=html>
+Title: <span data-url="/update_title.php">Hello world</span>
+</pre>
+
+See the [https://bitbucket.org/itinken/inplace/wiki/Attributes complete list of attributes]
+and settings.
