@@ -41,7 +41,8 @@ to be editable.
  $('.editable').jinplace();
 ```
 
-For many more examples see the [online demo](/xxx) and the [documentation](/..)
+For many more examples see the [online demo](https://bitbucket.org/itinken/jinplace/wiki/demo.html)
+and the [documentation](https://bitbucket.org/itinken/jinplace/wiki/Documentation)
 
 ### See also
 
