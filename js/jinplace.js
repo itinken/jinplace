@@ -22,7 +22,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 //noinspection JSUnnecessarySemicolon
-; (function ($, window, document, undefined) {
+;
+//noinspection JSUnusedLocalSymbols
+(function ($, window, document, undefined) {
 	var pluginName = "jinplace";
 
     var option_list = ['type',
@@ -176,7 +178,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			} else if (this.loadurl) {
 				data = $.ajax(this.loadurl, {
-					data: this.requestParams(),
+					data: this.requestParams(false),
 					context: self
 				});
 

@@ -2,7 +2,7 @@
 <module type="WEB_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Python" name="Python">
-      <configuration sdkName="Python 2.7.1 (/usr/bin/python2.7)" />
+      <configuration sdkName="Plain Python 2.7 (/usr/bin/python)" />
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
@@ -13,7 +13,7 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jquery" level="application" />
-    <orderEntry type="library" name="Python 2.7.1 (/usr/bin/python2.7) interpreter library" level="application" />
+    <orderEntry type="library" name="Plain Python 2.7 (/usr/bin/python) interpreter library" level="application" />
   </component>
 </module>
 

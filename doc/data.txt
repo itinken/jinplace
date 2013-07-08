@@ -1,5 +1,7 @@
 
 = Sending and receiving data=
+This section answers the question: What is sent to the server?
+
 ==Sending the modified value==
 when editing has finished, the new value is sent to the
 server using an ajax call.
@@ -7,8 +9,7 @@ server using an ajax call.
 The new value is sent as a parameter named 'value' using POST to the url specified.
 There may be additional parameters sent as follows.
 
-* If the element has an id then it will be sent with parameter name
-'id'
+* If the element has an id then it will be sent with parameter name 'id'.
 
 * If 'data-attribute' is set (or the config setting 'attribute' is
 present) then its value is sent under the parameter name 'attribute'.
@@ -18,7 +19,7 @@ is sent under the parameter name 'object'.
 
 The returned value is used to set the text within
 the editable element and replace the editing control.
-As such if the editing format and the display format
+So if the editing format and the display format
 differ, then it is the display format that is returned.
 
 For example, for a select dropdown, it will be the text of the
@@ -49,7 +50,7 @@ areas, rather than literal html (with the angle brackets) you need
 to set textOnly to false.
 
 === textarea ===
-The exact same considerations as for 'input'.
+This is exactly the same considerations as for 'input'.
 
 === select ===
 The display format is the text of the selected option.
@@ -59,7 +60,7 @@ options so that a dropdown can be constructed.
 The option list is formatted as in this example
 
 <pre code=json>
-[['1', 'Red'], ['2', 'Green', 1], ['3', 'Blue']]
+[["1", "Red"], ["2", "Green", 1], ["3", "Blue"]]
 </pre>
 
 Above there are three options 1, 2 and 3, with the values 'Red',

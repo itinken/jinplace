@@ -57,7 +57,7 @@ how you like.
 
 ===data-text-only===
 If set (which is the default) 
-then data will be displayed as text. That is to say '<p>' would display
+then data will be displayed as text. That is to say '<nowiki><p></nowiki>' would display
 literally and not cause a paragraph break.
 If you disable it then the data received back from the server will
 be interpreted as html. You are responsible for making sure this

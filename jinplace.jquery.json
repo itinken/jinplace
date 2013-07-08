@@ -1,15 +1,15 @@
 {
     "name": "jinplace",
     "version": "0.9.1",
-    "title": "JinPlace",
-    "description": "jQuery plugin for in place editing",
+    "title": "Jinplace - A plugin for in place editing",
+    "description": "A jQuery plugin for in place editing on a page, primarly controlled by HTML markup.",
     "keywords": [
         "inline",
         "edit",
 		"form"
     ],
     "author": {
-        "name": "Steve Ratcliffe",
+        "name": "Steve Ratcliffe"
     },
     "licenses": [
         {
@@ -18,7 +18,7 @@
         }
     ],
     "homepage": "https://bitbucket.org/itinken/jinplace",
-    "docs": "https://bitbucket.org/itinken/jinplace",
+    "docs": "https://bitbucket.org/itinken/jinplace/wiki/Documentation",
     "download": "https://bitbucket.org/itinken/jinplace/downloads",
 	"demo": "https://bitbucket.org/itinken/jinplace/wiki/demo.html",
     "dependencies": {

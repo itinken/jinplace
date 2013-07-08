@@ -3,7 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+
+<!-- The following groupd of js and css files are just for the demo -->
 <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.2.1/knockout-min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/json2/20121008/json2.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shCore.min.js"></script>
@@ -13,6 +14,8 @@
 <link rel=stylesheet href="http://bitbucket.com/itinken/jinplace/wiki/css/shCore.css">
 <link rel=stylesheet href="http://bitbucket.com/itinken/jinplace/wiki/css/shCoreDefault.css">
 
+<!-- These are the required files. Need nQuery 1.7+ -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script src="js/jinplace.js"></script>
 
 <style>
@@ -259,7 +262,7 @@ type to <em>textarea</em>.
 
 <div id="example-select" class="demo">
 <div class="description">
-<h2>Using a select dropdowm</h2>
+<h2>Using a select dropdown</h2>
 You can also have a list of choices with a select list.
 In this case you must supply the list of possible choices in the <b>data-data</b>
 attribute.
@@ -293,7 +296,7 @@ You can add an OK button which must be clicked to accept the change.
 </ul>
 
 <div class="example">
-  Lastname &lt;span class="editable"
+  Last name &lt;span class="editable"
                  data-url="/internal/person/lastname"
                  data-input-class="short"
                  data-ok-button="Go">Smith&lt;/span>
@@ -308,7 +311,7 @@ You can add an OK button which must be clicked to accept the change.
 
 <div id="example-ok-cancel" class="demo">
 <div class="description">
-<h2>With ok and cancel button</h2>
+<h2>With OK and cancel button</h2>
 You can also add a cancel button, again with the text that you specify.
 <ul>
   <li>Adds an OK button that is clicked to submit the data.
@@ -350,7 +353,7 @@ Any element can be used.
   <li>The data-input-class sets the class that will be applied to the input field</li>
 </ul>
 <div class="example">
-  Firstname:
+  First name:
   &lt;span class="editable"
         data-url="/internal/person/firstname"
         data-activator="#edit-activator"
@@ -427,20 +430,20 @@ text version, but display the html version of the page.
 </ul>
 
 <div class="example">
-  &lt;p>Firstname: &lt;span class="editable2" data-attribute="firstname">Mary&lt;/span>
+  &lt;p>Firstname: &lt;span class="editable3" data-attribute="firstname">Mary&lt;/span>
 
-  &lt;p>Lastname:  &lt;span class="editable2" data-attribute="lastname">Jones&lt;/span>
+  &lt;p>Lastname:  &lt;span class="editable3" data-attribute="lastname">Jones&lt;/span>
 
-  &lt;p>Direction:  &lt;span class="editable2" data-type="select"
+  &lt;p>Direction:  &lt;span class="editable3" data-type="select"
                        data-attribute="direction">West&lt;/span>
 
   &lt;p>Favourites:
-  &lt;div class="editable2" data-type="textarea" data-attribute="favourites"
+  &lt;div class="editable3" data-type="textarea" data-attribute="favourites"
       data-nil="[Click to add]">
   &lt;/div>
 
   &lt;script>
-    $('.editable2').jinplace({
+    $('.editable3').jinplace({
       url: '/internal/person2',
       loadurl: '/internal/person2'
     });
@@ -544,7 +547,7 @@ $(function() {
 </script>
 
 <script>
-// Arrange to syntax highlight everything and make real working code fromm the text of the
+// Arrange to syntax highlight everything and make real working code from the text of the
 // example.
 $(function() {
   $('.example').each(function () {
@@ -560,7 +563,14 @@ $(function() {
 
     // Parse the example into html and place it in the try it out column. Voila guaranteed to
     // be the same as the visible example with no repetition.
-    var html = $.parseHTML(exampleText, null, true);
+	// Note: parseHTML is only available in jQ 1.8+. Use it if available
+	// otherwise fall back to using jQuery(). This demo currently runs
+	// with jQ 1.7
+	var html;
+	if ($.parseHTML)
+		html = $.parseHTML(exampleText, null, true);
+	else
+		html = $(exampleText);
     var try_it = $this.parent().parent().find('.try-it');
 
     var heading = $('<h2>Try it out</h2>');
@@ -572,6 +582,14 @@ $(function() {
   });
 
   $('.editable').jinplace();
+  $('.editable2').jinplace({
+    url: '/internal/person2',
+    nil: '[Edit]'
+  });
+  $('.editable3').jinplace({
+    url: '/internal/person2',
+    loadurl: '/internal/person2'
+  });
 });
 </script>
 <script>
@@ -587,4 +605,5 @@ $(function() {
     $('#invalid').hide();
   }
 </script>
+</div>
 </body>

@@ -1,4 +1,4 @@
-# jinplace jquery plugin 
+# The jinplace jQuery plugin 
 
 ## Description
 
@@ -18,24 +18,47 @@ mixture of the two depending on your needs.
 * [Source](https://bitbucket.org/itinken/jinplace/src)
 * [Documentation](https://bitbucket.org/itinken/jinplace/wiki/Documentation)
 
+## Features 
+
+* Primarily driven by markup on the page.
+* Can also use javascript configuration.
+* Framework independent.
+* Works with IE6-8 and all modern browsers, including mobile.
+* Supports text input fields.
+* Supports textarea input fields.
+* Supports select dropdown fields.
+* Other kinds of input fields can be written as plugins
+* Text like editing fields can optionally have OK and Cancel buttons
+with configurable text.
+* Data to be edited can be supplied as an attribute of the element,
+rather than using the existing text within the element.
+* Data to be edited can be retrieved from the server just before
+editing.
+* The object to be edited can be identified in a variety of ways.
+* Any element can be used to activate the edit field, by default it
+will be the element itself.
+
 ## Basic usage 
 
-Basic usage is to first inlucde the javascript file
+You need to include the jQuery file and the jinplace file.
 
 ```html
-  <script src="js/jinplace.js"></script>
+  <!-- Adjust depending on where you have located the files -->
+  <script src="/js/jquery.js"></script>
+  <script src="/js/jinplace.js"></script>
 ```
 
-Then mark up the elements that you wish to be editable using
-the jinplace data-* attributes.
-At minimum you need only add a suitable class (or id) and the url to submit the data to.
+Then mark up the elements that you wish to be editable using the
+jinplace data-* attributes. At minimum you need only add a suitable
+class (or id) and the url to submit the data to.
 
 ```html
   <span class="editable" data-url="/api/modify/987/name">Fred</span>
 ```
 
 Finally initialise the plugin selecting all the elements you want
-to be editable.
+to be editable. The following example selects all elements that have
+class 'editable' and applies the plugin to them.
 
 ```javascript
  $('.editable').jinplace();
@@ -46,7 +69,15 @@ and the [documentation](https://bitbucket.org/itinken/jinplace/wiki/Documentatio
 
 ### See also
 
-Some alternative solutions are
+Some similar jQuery plugins for in place editing.
 
-* [jeditable](http://www.appelsiini.net/projects/jeditable)
-* [best\_in\_place](https://github.com/bernat/best_in_place)
+* [jeditable](http://www.appelsiini.net/projects/jeditable) Uses
+javascript configuration only. Although you can use jinplace in this
+manner, you may find that if you don't want to use markup
+configuration then jeditable may be more suitable for you as it has
+more configuration possibilities.
+* [best_in_place](https://github.com/bernat/best_in_place) Does
+in-place editing using markup to indicate the editable areas. It
+is part of a ruby on rails project and is somewhat tied to it. Can
+easily modify to work with any framework though. If you are using
+rails, then it may well suit your needs well.

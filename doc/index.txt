@@ -2,38 +2,51 @@
 = Documentation for jinplace =
 ==Introduction==
 
-jinplace is a jQuery plugin that is used to make sections of text
-on a page editable directly from the page.
-Editing starts by clicking on the text. It then turns into an
-input field where the new text can be typed.
-Clicking outside the field will submit the new new text and once
-a reply has been received, the input field is removed and the
-new text replaces it.
+Jinplace is a jQuery plugin that is used to make sections of text on a
+page editable directly from the page.  Editing starts by clicking on
+the text. It then turns into an input field where the new text can be
+typed.  Clicking outside the field will submit the new new text and
+once a reply has been received, the input field is removed and the new
+text replaces it.
 
 That is the basic flow, but there are a number of options to change
-this. You can have explicit OK and cancel buttons and a separate
-button to start editing for example.
+this. So for example you can have explicit OK and cancel buttons and a separate
+button to start editing.
 
-==Include javascript files==
+== Basic usage ==
+
+===Include the javascript files===
 As this is a jQuery plugin, you must include a version of jQuery
-(versions 1.7+ should work) first.
+first.  It will work with jQuery greater than or equal to version 1.7.
+If you use version 2.0 or above, then you will of course lose IE6-8
+compatibility.
 
-Download the latest version of this plugin
-[https://bitbucket.org/itinken/jinplace/downloads/jinplace-0.9.1.min.js jinplace-0.9.1.min.js].
-Go to the [https://bitbucket.org/itinken/jinplace/downloads download directory] for
-other versions or for an un-minified debug/development version of the file and source
-distributions.
+Download the latest version of this plugin from
+the [https://bitbucket.org/itinken/jinplace/downloads download directory].
 
-== Mark up the page ==
+=== Mark up the page ===
 
 You should read this section in conjunction with
-the [https://bitbucket.org/itinken/inplace/wiki/demo.html demo]
+the [https://bitbucket.org/itinken/jinplace/wiki/demo.html demo]
 which is structured like a mini tutorial for some of the
 basic mark up attributes.
 
+If text that you want to edit is already contained within an HTML
+element then you can just add a class and the jinplace attributes to
+it.  If not, or you just wish to keep things separate, then just
+surround the text with a 'span' or 'div' element as appropriate.
+
 <pre code=html>
-Title: <span data-url="/update_title.php">Hello world</span>
+Title: <span class="editable" data-url="/update_title.php">Hello world</span>
 </pre>
 
-See the [https://bitbucket.org/itinken/inplace/wiki/Attributes complete list of attributes]
-and settings.
+== References ==
+First read through the [https://bitbucket.org/itinken/jinplace/wiki/demo.html demo] which
+includes the exact code samples required for various features.
+
+Then for complete details
+* [https://bitbucket.org/itinken/jinplace/wiki/Attributes Complete list of attributes]
+All the attributes and configuration settings and how to use them.
+
+* [https://bitbucket.org/itinken/jinplace/wiki/Data Sending and receiving data] About
+supplying data to the editing controls and sending it to the server.
