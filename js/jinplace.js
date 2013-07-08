@@ -186,11 +186,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				data = $.trim(this.element.html());
 			}
 
-			return $.when(data).then(function(data) {
-				if (data == self.nil)
-					return '';
-				return data;
-			});
+            var placeholderFilter = function (data) {
+                if (data == self.nil)
+                    return '';
+                return data;
+            };
+
+            var when = $.when(data);
+            if (when.pipe) {
+                return when.pipe(placeholderFilter);
+            } else {
+                return when.then(placeholderFilter);
+            }
 		},
 
 		/**
