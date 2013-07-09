@@ -38,12 +38,24 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                        'inputClass',
                        'activator',
                        'textOnly',
-                       'nil'
+                       'placeholder'
+    ];
+
+    // Pairs of settings new,old.  We look for the old name and set the new.
+    var fallbacks = [
+            ['placeholder', 'nil']  // will be removed at v1.0
     ];
 
 	// The actual plugin constructor
 	function JinPlace(element, options) {
         var $el = this.element = $(element); // The editable element (often a span or div).
+
+        if (options) {
+            $.each(fallbacks, function (index, newold) {
+                var new_name = newold[0];
+                options[new_name] = options[new_name] || options[newold[1]];
+            });
+        }
 
         var elementOptions = this.elementOptions($el);
 
@@ -56,6 +68,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				$.fn[pluginName].defaults,
 				options,
                 elementOptions);
+
 
 		// TMP add all options to 'this'
 		$.extend(this, opts);
@@ -82,9 +95,17 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 return '-' + match.toLowerCase();
             }
 
+            function make_attr_name(value) {
+                return "data-" + value.replace(/[A-Z]/g, upperToHyphenLower);
+            }
+
             $.each(option_list, function(index, value) {
-                var att_name = "data-" + value.replace(/[A-Z]/g, upperToHyphenLower);
-                opts[value] = $el.attr(att_name);
+                opts[value] = $el.attr(make_attr_name(value));
+            });
+
+            $.each(fallbacks, function (index, newold) {
+                var new_name = newold[0];
+                opts[new_name] = opts[new_name] || $el.attr(make_attr_name(newold[1]));
             });
 
             opts.textOnly = opts.textOnly === true || opts.textOnly !== 'false';
@@ -100,7 +121,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             // If there is no content, then we replace it with the empty indicator.
             var $el = this.element;
             if ($.trim($el.html()) == "")
-                $el.html(this.nil);
+                $el.html(this.placeholder);
 		},
 
 		/**
@@ -187,7 +208,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			}
 
             var placeholderFilter = function (data) {
-                if (data == self.nil)
+                if (data == self.placeholder)
                     return '';
                 return data;
             };
@@ -272,7 +293,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             // Do any conversion from the data format to the display format
             data = editor.displayValue(data);
 			if (!data)
-				data = this.nil;
+				data = this.placeholder;
 
 			if (this.textOnly) {
 				element.text(data);
@@ -298,7 +319,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		url: document.location.pathname,
 		type: "input",
 		textOnly: true,
-		nil: '[ --- ]'
+		placeholder: '[ --- ]'
 	};
 
     /**

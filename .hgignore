@@ -6,4 +6,3 @@ syntax:glob
 Makefile
 */Makefile
 .*.sw?
-tests

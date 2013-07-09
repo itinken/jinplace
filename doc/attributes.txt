@@ -142,7 +142,7 @@ If you disable it then the data received back from the server will
 be interpreted as html. You are responsible for making sure this
 is safe.
 
-===data-nil===
+===data-placeholder===
 This is the string that is used when there is no data in the
 field.
 The default value is '[ --- ]'
@@ -165,7 +165,7 @@ settings.
 $('editable').jinplace({
 	url: '/api/modify',
 	textOnly: false,
-	nil: 'Click to edit',
+	placeholder: 'Click to edit',
 	okButton: 'OK',
 	cancelButton: 'Cancel'
 });

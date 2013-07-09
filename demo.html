@@ -380,8 +380,8 @@ You can of course use a mixture of both as you see fit.
 <ul>
   <li>The url is set, so it is the same for all fields</li>
   <li>The field to set is determined by the data-attribute</li>
-  <li>The nil setting is what is shown when the field is blank</li>
-  <li>The data-nil setting can be given on the html element to override the
+  <li>The 'placeholder' setting is what is shown when the field is blank</li>
+  <li>The data-placeholder setting can be given on the html element to override the
   general one.</li>
 </ul>
 <p>There are several more settings and most of them can be used on either the html element
@@ -397,13 +397,13 @@ or in the call to .jinplace().
 
   &lt;p>Favourites:
   &lt;div class="editable2" data-type="textarea" data-attribute="favourites"
-      data-nil="[Click to add]">
+      data-placeholder="[Click to add]">
   &lt;/div>
 
   &lt;script>
     $('.editable2').jinplace({
       url: '/internal/person2',
-      nil: '[Edit]'
+      placeholder: '[Edit]'
     });
   &lt;/script>
 </div>
@@ -440,7 +440,7 @@ text version, but display the html version of the page.
 
   &lt;p>Favourites:
   &lt;div class="editable3" data-type="textarea" data-attribute="favourites"
-      data-nil="[Click to add]">
+      data-placeholder="[Click to add]">
   &lt;/div>
 
   &lt;script>
@@ -585,7 +585,7 @@ $(function() {
   $('.editable').jinplace();
   $('.editable2').jinplace({
     url: '/internal/person2',
-    nil: '[Edit]'
+    placeholder: '[Edit]'
   });
   $('.editable3').jinplace({
     url: '/internal/person2',
