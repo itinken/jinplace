@@ -21,6 +21,7 @@
     "docs": "https://bitbucket.org/itinken/jinplace/wiki/Documentation",
     "download": "https://bitbucket.org/itinken/jinplace/downloads",
 	"demo": "https://bitbucket.org/itinken/jinplace/wiki/demo.html",
+	"bugs": "https://bitbucket.org/itinken/jinplace/issues",
     "dependencies": {
         "jquery": ">=1.7"
     }

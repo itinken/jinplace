@@ -18,32 +18,101 @@ Here we have the complete list of data attributes that can be set.
 ===data-url===
 The url to submit the form data to.
 The default is the same url as the page itself.
+It must be a page that can accept submitted form data.
+
+<pre code=html>
+  <span class="editable" data-url="/api/modify/188/name">Jo</span>
+</pre>
 
 ===data-type===
 The type of form element to be created. Can be one of 'input' for a
 regular text input, 'select' for a select dropdown box, or 'textarea'
 for a multiline text area.  The default is 'input'.
 
+<pre code=html>
+  <div class="editable" data-url="/api/modify/188/bio"
+  	data-type="textarea" >
+	This could be a long section of text.
+  </div>
+</pre>
+
+===data-activator===
+This is a selector for an element which should be used to activate
+the edit area rather than clicking on the text itself.
+Usually you would use an id to uniquely identify the edit button.
+
+<pre code=html>
+  <div class="editable" data-url="/api/modify/188/bio"
+  	data-type="textarea"
+	data-activator="#bio-edit">
+	This could be a long section of text.
+  </div>
+
+  <span id="bio-edit" class="button">Edit!</span>
+</pre>
+
+In this example clicking on the word 'Edit!' will activate the editing
+control.
+
 ===data-data===
 If supplied this is the editable version of the text.
 In the case of a select edit control, it must be a JSON list of value, text pairs.
+If neither data-data nor data-loadurl is supplied, then the editing
+control is initialised with the text from the element.
+
+<pre code=html>
+  <span class="editable" data-url="/api/modify/188/colour"
+  	data-data='[["1", "Red"], ["2", "Green"], ["3", "Blue"]]'>Blue</span>
+</pre>
 
 ===data-loadurl===
 If set then it is the url from which to load data.
 A GET http request is made to the 'loadurl' with the
 same parameters that would be sent on submit.
-The server returns data that is the initial value of the edit field.
+The server returns data that is used as the initial value of the edit field.
+
+In the example, the dropdown list is supplied by the server.
+
+<pre code=html>
+  <span class="editable" data-url="/api/modify/188/colour"
+  	data-loadurl='/api/lists/colours'>Blue</span>
+</pre>
+
+This is useful if the text is in markdown, textile or other wiki
+like format. The loadurl fetches the wiki text which is edited and
+sent to the server to update.  The server then returns the HTML
+version of the field to display.
 
 ===data-ok-button===
 If set, then there will be an OK button next to the input or textarea
 field.  The text on the button will be the value of this option.
-By default this is not set and there will be no submit button.
-Data is submitted on blur.
+By default there is no submit button, and data is submitted on blur.
+If there is only an OK button, then blur cancels the edit without
+submitting anything to the server.
+
+<pre code=html>
+  <span class="editable" data-url="/api/modify/188/name"
+  	data-ok-button='OK'>Jim</span>
+</pre>
+
+Buttons can only be associated with text inputs, ie 'input' and
+'textarea'.
 
 ===data-cancel-button===
 If set, then there will be a cancel button next to the input or textarea
 field.  The text on the button will be the value of this option.
-By default this is not set and there will be no cancel button.
+By default there is no cancel button.
+If there are both OK and cancel buttons, then blur has no effect and
+you must either explicitly click OK or cancel. This is in my opinion
+the best option for large text fields.
+
+<pre code=html>
+  <div class="editable" data-url="/api/modify/188/bio"
+  	data-ok-button='OK'
+	data-cancel-button='Cancel'>
+   Lots of text here.
+  </div>
+</pre>
 
 ===data-attribute===
 If set then this value will be sent to the server as part of the post data.
@@ -53,12 +122,22 @@ is being set, but you can of course use it however you like.
 ===data-object===
 If set the this value will be sent to the server as part of the post data.
 It is intended to identify the object to be set, but you can interpret it
-how you like.
+in any way that you like.
+
+<pre code=html>
+  <span class="editable" data-url="/api/modify"
+  	data-ok-button='OK'
+	data-cancel-button='Cancel'
+	data-object="188"
+	data-attribute="name">
+   Pete
+  </span>
+</pre>
 
 ===data-text-only===
 If set (which is the default) 
-then data will be displayed as text. That is to say '<nowiki><p></nowiki>' would display
-literally and not cause a paragraph break.
+then data is displayed as text. That is to say '<nowiki><p></nowiki>' would display
+literally and does not cause a paragraph break.
 If you disable it then the data received back from the server will
 be interpreted as html. You are responsible for making sure this
 is safe.
