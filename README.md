@@ -80,4 +80,4 @@ more configuration possibilities.
 in-place editing using markup to indicate the editable areas. It
 is part of a ruby on rails project and is somewhat tied to it. Can
 easily modify to work with any framework though. If you are using
-rails, then it may well suit your needs well.
+rails, then it may well suit your needs.
