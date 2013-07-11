@@ -143,9 +143,12 @@ be interpreted as html. You are responsible for making sure this
 is safe.
 
 ===data-placeholder===
-This is the string that is used when there is no data in the
-field.
+If the element is empty, then you would not be able to click on it to
+start editing.  So if it is empty, then jinplace will add the placeholder
+text as specified with this attribute or config setting.  When editing,
+this placeholder text is removed.
 The default value is '[ --- ]'
+(This attribute was named 'data-nil' in previous versions)
 
 ===data-input-class===
 The input field will have this class.

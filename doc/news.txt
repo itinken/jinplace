@@ -1,0 +1,16 @@
+
+= News =
+
+== data-nil changes to data-placeholder ==
+'''10 July 2013''' The setting that used to be known as 'data-nil' is
+now changed to 'data-placeholder'. The old name will still work for
+a while, probably until the API is declared stable with 1.0.
+
+Naturally the same is true of the config setting which is now
+'placeholder'
+
+<pre code=js>
+$('.editable').jinplace({
+	placeholder: '[Click!]'
+});
+</pre>

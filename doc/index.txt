@@ -13,6 +13,8 @@ That is the basic flow, but there are a number of options to change
 this. So for example you can have explicit OK and cancel buttons and a separate
 button to start editing.
 
+For recent changes see the [https://bitbucket.org/itinken/jinplace/wiki/News news]
+
 == Basic usage ==
 
 ===Include the javascript files===
