@@ -157,7 +157,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 self.element.html(form);
 
                 // Now we can setup handlers and focus or otherwise activate the field.
-                setupInput(self, form, field);
+                setupInput(self, form, editor.blurElements(field));
                 $.each(editor.submitEvents, function (index, value) {
                     form.on(value, $.proxy(self.submitHandler, self));
                 });
@@ -468,6 +468,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          * A list of events that the submit handler should be bound to.
          */
         submitEvents: ['submit'],
+
+        blurElements: function(field) {
+            return field;
+        },
 
         /**
          * We are just about to remove the edit control and we have data returned from
