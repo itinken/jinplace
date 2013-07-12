@@ -24,26 +24,29 @@ if sys.argv[1] == 'edit':
 	for_edit = True
 
 f = open('demo.html')
-munge = False
+munge = 0
 
 outf = open('d.html', 'w')
 
 for line in f.xreadlines():
 
-	if munge:
+	if munge > 0:
 		m = re.match(r'^([ \t]*)</div>', line)
-		if m and len(m.group(1)) <= munge:
-			munge = 0
+		if m:
+			munge -= 1
+		m = re.match(r'^[ \t]*<div', line)
+		if m:
+			munge += 1
 
-	if munge:
+	if munge > 0:
 		if for_edit:
 			line = re.sub('&lt;', '<', line)
 		else:
 			line = re.sub('<', '&lt;', line)
 
-	m = re.match(r'^([ \t]*).*class="example"', line)
+	m = re.match(r'^([ \t]*)<div .*class="example"', line)
 	if m:
-		munge = len(m.group(1))
+		munge += 1
 
 	print >>outf, line,
 
