@@ -30,9 +30,9 @@ $.fn.jinplace.editors.checkbox = {
 
   activate: function (field) {
     field.focus();
-//    field.on('click', function (ev) {
-//      ev.stopImmediatePropagation();
-//    });
+    field.on('click', function (ev) {
+      ev.stopPropagation();
+    });
   }
 };
 </script>
