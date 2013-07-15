@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Demo for jinplace</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<!-- These are the required files. Need nQuery 1.7+ -->
+<script src="/opt/js/jquery-1.10.1.js"></script>
+<script src="js/jinplace.js"></script>
+
+<script>
+$.fn.jinplace.editors.checkbox = {
+  makeField: function (element, data) {
+    var field = $('<label tabindex="-1"/>');
+    var $input = $('<input type="checkbox">');
+    field.append($input);
+    field.data('jip:input', $input);
+
+    // If the text matches our On value, then check the box.
+    var text = $.trim(element.text());
+    field.append(text);
+    return field;
+  },
+
+  blurElements: function(field) {
+//    return field.data('jip:input');
+    return field;
+  },
+
+  activate: function (field) {
+    field.focus();
+    field.on('click', function (ev) {
+      ev.stopPropagation();
+    });
+  }
+};
+</script>
+</head>
+
+<body>
+<h2>Checkbox field</h2>
+
+<div class="example">
+  Likes cats <span class="editable" data-type="checkbox"
+                   data-url="/internal/person/cats">Yes
+  </span>
+</div>
+
+<script>
+  $('.editable').jinplace();
+</script>
