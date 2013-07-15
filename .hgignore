@@ -6,3 +6,4 @@ syntax:glob
 Makefile
 */Makefile
 .*.sw?
+dist
