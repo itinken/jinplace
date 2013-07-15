@@ -1,0 +1,93 @@
+= Writing a plugin =
+
+== Design how it will work ==
+We are using the example of a checkbox input type.
+
+This is a moderately complex example and should demonstrate
+a few of the considerations when writing a plugin.
+
+It will have the following characteristics
+* Send 0 or 1 to the server for false and true.
+* The default text will be 'Yes' and 'No'
+* You can change those strings using the data attribute
+* The editing control will consist of a check box input element, plus
+the text.
+* Submit will be on blur
+
+There would be other ways of doing this, for example instant
+toggle on click as some other in-place editors do. I my
+opinion this give too much scope for accidental change.
+
+== Set up an html page to test ==
+
+Lets start with the simplest thing. Just an element with
+all the defaults.
+<pre code=html>
+<span data-type="checkbox">Yes</span>
+</pre>
+
+== Start the plugin ==
+
+The data-type is 'checkbox' and so that is the name of the plugin.
+So start off by adding it to the available editors.
+<pre code=js>
+$.fn.jinplace.editors.checkbox = {
+	// code to be written...
+};
+</pre>
+
+This will actually do something already. On clicking on the
+'Yes' it will convert into a text input.
+But this is not what what we want so we have to override
+the <code>makeField</code> method.
+
+<pre code=js>
+$.fn.jinplace.editors.checkbox = {
+	makeField: function(element, data) {
+		var field = $('<input type="checkbox">');
+
+		// Append the text from the element
+		field.after(element.text());
+		return field;
+	}
+};
+</pre>
+
+This looks just about right already, but the checkbox should
+be checked and we need to deal with being given non-default
+values for the on/off texts. Also clicking on the text causes
+a blur event and takes down the control which is probably not
+to be expected. We also have no way to actually set the
+checkbox yet.
+
+The second argument to 'makeField' is the data that is either
+the element text, the data returned by data-loadurl or that
+supplied by data-data.  We haven't set those yet as we have
+a default of ["No", "Yes"] for the values.
+We test the data argument to see if it is a JSON value - it
+isn't yet, so set our default. The we work out if the check
+box should be on or off by attempting to find the element
+text in our list of values.  If it matches the second, then
+the checkbox should be selected.
+
+<pre code=js>
+function(element, data) {
+	console.log(data);
+	var values;
+	if (data.charAt(0) == '[')
+		values = $.parseJSON(data);
+	else
+		values = ["No", "Yes"];
+
+	var field = $('<input type="checkbox">');
+
+	// If the text matches our On value, then check the box.
+	var text = element.text();
+	if (values[1] == text)
+		field.prop('checked', true);
+
+	field.after('&nbsp;' + text);
+
+	return field;
+}
+</pre>
