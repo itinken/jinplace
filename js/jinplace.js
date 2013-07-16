@@ -149,7 +149,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			self.fetchData(opts).done(function(data) {
 
 				var field = editor.makeField(self.element, data);
-                editor.inputField = field;
+                if (!editor.inputField)
+                    editor.inputField = field;
                 field.addClass(opts.inputClass);
 
                 var form = createForm(opts, field, editor.buttonsAllowed);
@@ -370,26 +371,32 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
      * This is the interface of an editor function. Plugins need only redefine the methods
      * or data that are appropriate.
      *
-     * @type {{buttonsAllowed: boolean, element: undefined, makeField: Function, activate: Function, displayValue: Function}}
+     * @type {{element: undefined, makeField: Function, activate: Function, displayValue: Function}}
      */
     var editorBase = {
         /**
          * Are we allowed to automatically add buttons to the form. Set this to
          * true for a text input where it might make sense.  They are only added
          * if the user asks for them in any case.
-         */
+         *
         buttonsAllowed: false,
 
+         */
 
         /**
-         * The input field returned by makeField() will always be saved.  It can be
-         * referenced as this.inputField in any of the other methods.
+         * The input field returned by makeField() will be saved as this.inputField unless
+         * it is set within the makeField() method itself.
+         *
         inputField: undefined,
+
          */
 
         /**
          * Make the editing field that will be added to the form. Editing field is
          * a general term; it could be a complex control or just a plain <input>.
+         *
+         * You may set this.inputField within the body of this method, if you do
+         * not then it will be set to the value you return.
          *
          * @param element The original element that we are going to edit.
          * @param data The initial data that should be used to initialise the
@@ -408,6 +415,15 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         /**
          * Activate the field. It is now part of the document.
          *
+         * Set up events as required.  You should ensure that the events 'jip:submit' or
+         * 'jip:cancel' are triggered on the form to submit the field or to cancel the
+         * edit as appropriate.
+         *
+         * You can use 'submit' instead of 'jip:submit' to take advantage of standard
+         * form processing.
+         *
+         * The default implementation is only useful for straight-forward text inputs.
+         *
          * @param form The form your editor is contained in. If you want to avoid
          * events bubbling up, you can stop them here.
          * @param field The editing field.  Passed as a convenience so we don't have
@@ -415,6 +431,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          */
         activate: function (form, field) {
             field.focus();
+
+            // The 'blurAction' data has been set according to which
+            // buttons were requested.  This does nothing for non-text inputs so
+            // you will have to decide what you want blur to do, if anything.
             this.blurEvent(field, form, form.data('blurAction'));
         },
 
@@ -422,7 +442,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          * The value of the editor. This is the value returned by the input field
          * or component that should be sent to the server.
          *
-         * @returns {*}
+         * The default implementation just calls .val() on the inputField.
+         *
+         * @returns {*} The value that should be submitted to the server for this editor.
          */
         value: function () {
             return this.inputField.val();
@@ -433,10 +455,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          * the server. This method converts the server form of the data into the on page
          * value.
          *
-         * For a text input this is just the same.
+         * The default implementation returns the data unchanged, which is suitable
+         * for a text input.
          *
-         * For a select list, you may have [['1', 'blue'], ['2', 'green']]; if the server
+         * For a select list, you might have [['1', 'blue'], ['2', 'green']]; if the server
          * returns '2', then you return 'green' from this method.
+         *
          * @param data The data as returned by the server which is to be used to populate
          * the page after the edit control is removed.
          * @returns {*} The data modified in any way that is appropriate.
