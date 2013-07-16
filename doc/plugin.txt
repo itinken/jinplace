@@ -1,4 +1,4 @@
-= Writing a plugin =
+= Writing an editor plugin =
 
 It would be a good first step to look at the existing code for "input",
 "textarea" and "select" as these are much simpler.
@@ -7,7 +7,7 @@ It would be a good first step to look at the existing code for "input",
 We are using the example of a checkbox input type.
 
 This is a moderately complex example and demonstrates all the different
-api methods that can be used.
+API methods that can be used.
 
 It will have the following characteristics
 * It will be called checkbox_demo
@@ -18,10 +18,9 @@ It will have the following characteristics
 the text.
 * Submit will be on blur
 
-There would be other ways of doing this, for example instant
-toggle on click as some other in-place editors do. In my
-opinion this give too much scope for accidental change and also
-doing things this way demonstrates every feature of the api!
+There would be other ways of doing this, for example instant toggle on
+click. In my opinion this give too much scope for accidental change and
+also doing things this way demonstrates every feature of the api!
 
 == Set up an html page to test ==
 
@@ -31,7 +30,7 @@ all the defaults.
 <span data-type="checkbox_demo">Yes</span>
 </pre>
 
-== Writing the plugin ==
+== Starting the plugin ==
 
 The data-type is 'checkbox_demo' and so that is the name of the plugin.
 So start off by adding it to the available editors.
@@ -43,7 +42,7 @@ $.fn.jinplace.editors.checkbox_demo = {
 
 This will actually do something already. On clicking on the
 'Yes' it will convert into a text input.
-But this is not what what we want so we have to override
+But this is not what we want so we have to override
 the <code>makeField</code> method.
 
 <pre code=js>
@@ -119,9 +118,12 @@ To fix this we implement the 'activate' method in our plugin.
   }
 </pre>
 
+== Event handling ==
 The checkbox now checks and un-checks when it is clicked and also when
-the label is clicked. The label still reads 'Yes' however instead of changing to
-'No' when the checkbox is unchecked.
+the label is clicked. The label still reads 'Yes' however instead of
+changing to 'No' when the checkbox is unchecked.
+
+So we look at the change event and change the label.
 
 <pre code=js>
   makeField: function(element, data) {
@@ -173,6 +175,7 @@ the label is clicked. The label still reads 'Yes' however instead of changing to
 We've made quite a few changes, to save certain information on the editor
 object and then use it to change the text to match the checked status.
 
+== Submitting the value ==
 Now we have to consider submitting the value.
 For the demo we will use the blur event to submit.
 
@@ -203,12 +206,8 @@ For the demo we will use the blur event to submit.
   }
 </pre>
 
-== Changing what is sent to the server ==
+=== Changing what is sent to the server ===
 Our plugin is now working and sending values to the server.
-For the demo we want to see what is going on, so we mock out the ajax
-call to print what is being sent and return an appropriate value.
-
-<pre code=js>
 For the demo we want to see what is going on, so we mock out the ajax
 call to print what is being sent and return an appropriate value.
 
@@ -241,8 +240,10 @@ So add a new method to our plugin called 'value'.
   }
 </pre>
 
+==Displaying the result==
 Now the text of the field is being replaced by '1' or '0' rather than
 "Yes" or "No" so this leads us to the final method 'displayValue'.
+This converts the server values back to the display values.
 
 <pre code=js>
   displayValue: function(data) {

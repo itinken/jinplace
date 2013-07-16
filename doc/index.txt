@@ -15,6 +15,19 @@ button to start editing.
 
 For recent changes see the [https://bitbucket.org/itinken/jinplace/wiki/News news]
 
+== Index ==
+* [https://bitbucket.org/itinken/jinplace/wiki/Attributes Complete list of attributes]
+All the attributes and configuration settings and how to use them.
+
+* [https://bitbucket.org/itinken/jinplace/wiki/Data Sending and receiving data] About
+supplying data to the editing controls and sending it to the server.
+
+* [https://bitbucket.org/itinken/jinplace/wiki/Plugin Writing an editor plugin]
+A complete walkthrough of developing a new editor plugin.
+
+* [https://bitbucket.org/itinken/jinplace/wiki/demo.html The demo] has
+code examples and their result.
+
 == Basic usage ==
 
 ===Include the javascript files===
