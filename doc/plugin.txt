@@ -1,12 +1,16 @@
 = Writing a plugin =
 
+It would be a good first step to look at the existing code for "input",
+"textarea" and "select" as these are much simpler.
+
 == Design how it will work ==
 We are using the example of a checkbox input type.
 
-This is a moderately complex example and should demonstrate
-a few of the considerations when writing a plugin.
+This is a moderately complex example and demonstrates all the different
+api methods that can be used.
 
 It will have the following characteristics
+* It will be called checkbox_demo
 * Send 0 or 1 to the server for false and true.
 * The default text will be 'Yes' and 'No'
 * You can change those strings using the data attribute
@@ -15,23 +19,24 @@ the text.
 * Submit will be on blur
 
 There would be other ways of doing this, for example instant
-toggle on click as some other in-place editors do. I my
-opinion this give too much scope for accidental change.
+toggle on click as some other in-place editors do. In my
+opinion this give too much scope for accidental change and also
+doing things this way demonstrates every feature of the api!
 
 == Set up an html page to test ==
 
 Lets start with the simplest thing. Just an element with
 all the defaults.
 <pre code=html>
-<span data-type="checkbox">Yes</span>
+<span data-type="checkbox_demo">Yes</span>
 </pre>
 
-== Start the plugin ==
+== Writing the plugin ==
 
-The data-type is 'checkbox' and so that is the name of the plugin.
+The data-type is 'checkbox_demo' and so that is the name of the plugin.
 So start off by adding it to the available editors.
 <pre code=js>
-$.fn.jinplace.editors.checkbox = {
+$.fn.jinplace.editors.checkbox_demo = {
 	// code to be written...
 };
 </pre>
@@ -42,12 +47,16 @@ But this is not what what we want so we have to override
 the <code>makeField</code> method.
 
 <pre code=js>
-$.fn.jinplace.editors.checkbox = {
+$.fn.jinplace.editors.checkbox_demo = {
 	makeField: function(element, data) {
-		var field = $('<input type="checkbox">');
+		// Create a label with a checkbox inside it.
+		var field = $('<label/>');
+		var input = $('<input type="checkbox">');
+		field.append(input);
 
-		// Append the text from the element
-		field.after(element.text());
+		// Add the text to the label.
+		var text = $.trim(element.text());
+		field.append(text);
 		return field;
 	}
 };
@@ -55,39 +64,276 @@ $.fn.jinplace.editors.checkbox = {
 
 This looks just about right already, but the checkbox should
 be checked and we need to deal with being given non-default
-values for the on/off texts. Also clicking on the text causes
-a blur event and takes down the control which is probably not
-to be expected. We also have no way to actually set the
-checkbox yet.
+values for the on/off texts. Clicking on the control does
+nothing yet.
 
 The second argument to 'makeField' is the data that is either
 the element text, the data returned by data-loadurl or that
-supplied by data-data.  We haven't set those yet as we have
-a default of ["No", "Yes"] for the values.
-We test the data argument to see if it is a JSON value - it
-isn't yet, so set our default. The we work out if the check
+supplied by data-data.  We haven't set any of those yet so we
+will apply the default of ["No", "Yes"].
+
+So we test the data argument to see if it is a JSON value - it
+isn't yet, so set our default. Then we work out if the check
 box should be on or off by attempting to find the element
 text in our list of values.  If it matches the second, then
 the checkbox should be selected.
 
 <pre code=js>
-function(element, data) {
-	console.log(data);
+  makeField: function (element, data) {
+    var field = $('<label/>');
+    var input = $('<input type="checkbox">');
+    field.append(input);
+
+    var text = $.trim(element.text());
+
+    // Get the text for the off/on values of the checkbox
 	var values;
 	if (data.charAt(0) == '[')
 		values = $.parseJSON(data);
 	else
 		values = ["No", "Yes"];
 
-	var field = $('<input type="checkbox">');
+	// If the original text matches our 'on' value, set the initial state
+	// of the checkbox
+	input.attr('checked', values[1] == text);
 
-	// If the text matches our On value, then check the box.
-	var text = element.text();
-	if (values[1] == text)
-		field.prop('checked', true);
+    field.append(text);
+    return field;
+  }
+</pre>
 
-	field.after('&nbsp;' + text);
+So the next thing is that mouse clicks have no effect. This is because
+the default action is being prevented so we have to stop that happening.
+To fix this we implement the 'activate' method in our plugin.
 
-	return field;
-}
+<pre code=js>
+  makeField: function(element, data) {
+    // code as before, removed for clarity
+  },
+
+  activate: function(form, field) {
+    field.focus();
+    field.on('click', function (ev) {
+      ev.stopPropagation();
+    });
+  }
+</pre>
+
+The checkbox now checks and un-checks when it is clicked and also when
+the label is clicked. The label still reads 'Yes' however instead of changing to
+'No' when the checkbox is unchecked.
+
+<pre code=js>
+  makeField: function(element, data) {
+    var label = $('<label/>');
+    var checkbox = $('<input type="checkbox">');
+    label.append(checkbox);
+
+    var text = $.trim(element.text());
+
+    // Get the text for the off/on values of the checkbox
+    var values;
+    if (data.charAt(0) == '[')
+      values = $.parseJSON(data);
+    else
+      values = ["No", "Yes"];
+
+    // If the original text matches our 'on' value, set the initial state
+    // of the checkbox
+    checkbox.attr('checked', values[1] == text);
+
+    var textNode = $('<span>' + text + '</span>');
+    label.append(textNode);
+
+    this.choices = values;
+    this.label = label;
+    this.inputField = checkbox;
+    this.textNode = textNode;
+
+    return label;
+  },
+
+  activate: function(form, field) {
+    var self = this;
+
+    field.focus();
+
+	this.label
+        .on('click', function (ev) {
+          ev.stopPropagation();
+        })
+        .on('change', function(ev) {
+          // Get the checked state and set the text to match it
+          var checked = self.inputField.prop('checked');
+          self.textNode.text(self.choices[checked ? 1 : 0]);
+        });
+  }
+</pre>
+
+We've made quite a few changes, to save certain information on the editor
+object and then use it to change the text to match the checked status.
+
+Now we have to consider submitting the value.
+For the demo we will use the blur event to submit.
+
+<pre code=js>
+  activate: function(form, field) {
+    var self = this;
+
+    field.focus();
+
+    this.label
+        .on('click', function (ev) {
+          ev.stopPropagation();
+        })
+        .on('change', function(ev) {
+          // Get the checked state and set the text to match it
+          var checked = self.inputField.prop('checked');
+          self.textNode.text(self.choices[checked ? 1 : 0]);
+        });
+
+	// A blur event on the inputField (the checkbox itself) is cancelled
+	// if there is a click anywhere on the whole label area within a
+	// short period of time.
+	// If not then the submit event is generated.
+	//
+	// If you wanted blur to cancel the change, then you should use
+	// 'jip:cancel' instead of 'submit'
+    this.blurEvent(this.inputField, this.label, 'submit');
+  }
+</pre>
+
+== Changing what is sent to the server ==
+Our plugin is now working and sending values to the server.
+For the demo we want to see what is going on, so we mock out the ajax
+call to print what is being sent and return an appropriate value.
+
+<pre code=js>
+For the demo we want to see what is going on, so we mock out the ajax
+call to print what is being sent and return an appropriate value.
+
+<pre code=js>
+// Only for the demo! Add this code before the plugin code.
+$.ajax = function(url, data) {
+  var params = data.data || {};
+
+  // For IE, you may have to press F12 to enable the console or you might
+  // just want to replace this with an alert or other notification.
+  console.log(url, params.value);
+  
+  var d = $.Deferred();
+  d.done($.proxy(data.success, data.context));
+  d.fail($.proxy(data.error, data.context));
+  d.resolveWith(data.context, [params.value]);
+};
+</pre>
+
+Now we see that we send the value 'on' always, regardless of whether the
+checkbox is checked or not.
+This is because the default implementation of value is of no use for a
+checkbox.
+
+So add a new method to our plugin called 'value'.
+
+<pre code=js>
+  value: function() {
+    return this.inputField.prop('checked')? 1: 0;
+  }
+</pre>
+
+Now the text of the field is being replaced by '1' or '0' rather than
+"Yes" or "No" so this leads us to the final method 'displayValue'.
+
+<pre code=js>
+  displayValue: function(data) {
+    data = data? 1: 0;
+    return this.choices[data];
+  }
+</pre>
+
+Now the plugin is complete. The display text shows 'Yes' or 'No'
+according to the return from the server.
+
+Finally we need to check that it works with non-default values for the
+choices. The text should alternate between "Of course" and "No way"
+instead of "Yes" and "No".
+
+<pre code=html>
+	<span data-type=checkbox_demo" data-url="/update"
+		data-data='["No way", "Of course"]'>No way</span>
+</pre>
+
+== The complete code ==
+Here for reference is the complete plugin.
+
+<pre code=js>
+$.fn.jinplace.editors.checkbox = {
+  // This should make the editing form that will be added.
+  // We are using a label containing a checkbox and some text.
+  // It returns the label and remembers a number of other values that
+  // will be needed in parts of the plugin.
+  makeField: function(element, data) {
+    var label = $('<label/>');
+    var checkbox = $('<input type="checkbox">');
+    label.append(checkbox);
+
+    var text = $.trim(element.text());
+
+    // Get the text for the off/on values of the checkbox
+    var values;
+    if (data.charAt(0) == '[')
+      values = $.parseJSON(data);
+    else
+      values = ["No", "Yes"];
+
+    // If the original text matches our 'on' value, set the initial state
+    // of the checkbox
+    checkbox.attr('checked', values[1] == text);
+
+    var textNode = $('<span>' + text + '</span>');
+    label.append(textNode);
+
+    this.choices = values;
+    this.inputField = checkbox;
+    this.label = label;
+    this.textNode = textNode;
+
+    return label;
+  },
+
+  // The form has been added to the document and so we can set up events
+  activate: function(form, field) {
+    var self = this;
+
+    field.focus();
+
+    this.label
+        .on('click', function (ev) {
+          // Prevent the click from going any further
+          ev.stopPropagation();
+        })
+        .on('change', function(ev) {
+          // Get the checked state and set the text to match it
+          var checked = self.inputField.prop('checked');
+          self.textNode.text(self.choices[checked ? 1 : 0]);
+        });
+
+    this.blurEvent(this.inputField, this.label, 'submit');
+  },
+
+  // Returns the value that should be sent to the server.
+  // Our spec says 0 and 1, so we look at the 'checked' property
+  // and return the appropriate value
+  value: function() {
+    return this.inputField.prop('checked')? 1: 0;
+  },
+
+  // Converts the value received as a reply from the server into the text
+  // to display when the editing control is removed.
+  // In our case the data should be 0 or 1, but we make sure that any true value
+  // received will be mapped to 1.
+  displayValue: function(data) {
+    return this.choices[data? 1: 0];
+  }
+};
 </pre>
