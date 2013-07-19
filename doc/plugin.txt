@@ -268,7 +268,7 @@ instead of "Yes" and "No".
 Here for reference is the complete plugin.
 
 <pre code=js>
-$.fn.jinplace.editors.checkbox = {
+$.fn.jinplace.editors.checkbox_demo = {
   // This should make the editing form that will be added.
   // We are using a label containing a checkbox and some text.
   // It returns the label and remembers a number of other values that

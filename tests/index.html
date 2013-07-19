@@ -12,6 +12,27 @@
 		<div id="qunit-fixture"></div>
 		<script src="qunit.js"></script>
 
-		<script src="placeholder.js"></script>
+		<script>
+			// Timeout to wait for blur events in ms.  In case we have to
+			// change it.
+			var BLUR_TIMEOUT = 310;
+
+            // sync mock up of the ajax call.
+            $.ajax = function(url, opts) {
+                console.log('AJAX', url, opts.data);
+
+                var d = $.Deferred();
+                d.done($.proxy(opts.success, opts.context));
+                d.fail($.proxy(opts.error, opts.context));
+                d.resolveWith(opts.context, [opts.data.value]);
+                return d.promise();
+            };
+		</script>
+
+        <script src="input.js"></script>
+        <script src="textarea.js"></script>
+        <script src="select.js"></script>
+
+        <script src="placeholder.js"></script>
 	</body>
 </html>

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/jinplace.iml" filepath="$PROJECT_DIR$/jinplace.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jinplace-extra/jinplace-extra.iml" filepath="$PROJECT_DIR$/../jinplace-extra/jinplace-extra.iml" />
     </modules>
   </component>
 </project>

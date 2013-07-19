@@ -69,13 +69,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				options,
                 elementOptions);
 
-
 		this.opts = opts;
-
-        // Create an editor instance for this element.  This knows how to create
-        // the editing field as specified in type.
-		var editor = $.fn[pluginName].editors[opts.type];
-        this.editor = $.extend({}, editorBase, editor);
 
 		this.bindElement(opts);
 	}
@@ -136,12 +130,19 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			// Turn off the activation handler, and disable any effect in case the activator
 			// was a button that might submit.
-			$(ev.currentTarget).off('click.jip')
-					.on('click.jip', function(ev) { ev.preventDefault();});
+			$(ev.currentTarget)
+                    .off('click.jip')
+					.on('click.jip', function(ev) {
+                        ev.preventDefault();
+                    });
 
             var self = this,
-                    editor = self.editor,
                     opts = self.opts;
+
+            // A new editor is created for every activation. So it is OK to keep instance
+            // data on it.
+            var editor = $.fn[pluginName].editors[opts.type];
+            editor = $.extend({}, editorBase, editor);
 
             // Save original for use when cancelling.
 			self.origValue = self.element.html();
@@ -161,7 +162,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 // Now we can setup handlers and focus or otherwise activate the field.
 
                 form.on("jip:submit submit", function(ev) {
-                    self.submit();
+                    self.submit(editor, opts);
                     return false;
                 })
                 .on("jip:cancel", function(ev) {
@@ -170,24 +171,34 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 });
 
                 editor.activate(form, field);
+
+                // The action to take on blur can be set on the editor.  If not, and there
+                // are automatically added buttons, then the blur action is set according to
+                // which ones exist. By default nothing happens on blur.
+                var act = editor.blurAction || (
+                        (!opts.okButton)? 'submit':
+                                (!opts.cancelButton)? 'jip:cancel':
+                                        undefined);
+                editor.blurEvent(field, form, act);
 			});
 		},
 
         /**
          * Get the parameters that will be sent in the ajax call to the server.
          * Called for both the url and loadurl cases.
-         * @param isSend True if we are sending. (not for loadurl).
+         * @param opts The options from the element and config settings.
+         * @param value The value of the control as returned by editor.value().
          * @returns {{id: string, object: *, attribute: *}}
          */
-		requestParams: function(isSend) {
-            var self = this, opts = self.opts;
+		requestParams: function(opts, value) {
+            var self = this;
 			var params = { "id": self.element.id,
 				"object": opts.object,
 				attribute: opts.attribute
 			};
 
-			if (isSend)
-				params.value = self.editor.value();
+			if (value)
+				params.value = value;
 
 			return params;
 		},
@@ -207,7 +218,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			} else if (opts.loadurl) {
 				data = $.ajax(opts.loadurl, {
-					data: this.requestParams(false),
+					data: this.requestParams(opts, undefined),
 					context: self
 				});
 
@@ -243,26 +254,26 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		/**
 		 * Called to submit the changed data to the server.
 		 *
-		 * This method is always called with this set to this object.
-		 *
-		 * @param ev The event that caused us to be called. Not interesting to
-		 * this routine, since it could be many different things.
+		 * This method is always called with 'this' set to this object.
 		 */
-		submit: function () {
+		submit: function (editor, opts) {
             var self = this;
-			$.ajax(self.opts.url, {
-				type: "post",
-				data: self.requestParams(true),
-				dataType: 'text',
-				context: self,
-				success: self.onUpdate,
-				error: self.cancel});
-		},
+            $.ajax(opts.url, {
+                type: "post",
+                data: self.requestParams(opts, editor.value()),
+                dataType: 'text',
+                context: self,
+                error: self.cancel
+            })
+                    .done(function(data) {
+                        this.onUpdate(editor.displayValue(data));
+                    });
+        },
 
-		/**
-		 * The server has received our data and replied successfully and the new data to
-		 * be displayed is available.
-		 * @param data The data to display from the server.
+        /**
+         * The server has received our data and replied successfully and the new data to
+         * be displayed is available.
+         * @param data The data to display from the server.
 		 */
 		onUpdate: function(data) {
             var self = this;
@@ -274,17 +285,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		 * Set the content of the element.  Called to update the value from the value
 		 * returned by the server.
 		 *
-		 * The editors may have a getDisplay() method, that is used to modify the data
-		 * before display.
-		 *
-		 * @param data The data to be displayed.
+		 * @param data The data to be displayed, it has been converted to the display format.
 		 */
 		setContent: function(data) {
-            var element = this.element,
-                    editor = this.editor;
+            var element = this.element;
 
-            // Do any conversion from the data format to the display format
-            data = editor.displayValue(data);
 			if (!data)
 				data = this.placeholder;
 
@@ -363,15 +368,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             $button = $("<input>").attr("type", "button").attr("value", cancel);
             setHandler($button, 'jip:cancel');
         }
-
-        form.data('blurAction', (!ok)? 'submit': (!cancel)? 'jip:cancel': undefined);
     };
 
     /**
      * This is the interface of an editor function. Plugins need only redefine the methods
      * or data that are appropriate.
      *
-     * @type {{element: undefined, makeField: Function, activate: Function, displayValue: Function}}
+     * @type {{base: undefined, element: undefined, makeField: Function, activate: Function, displayValue: Function}}
      */
     var editorBase = {
         /**
@@ -379,7 +382,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          * true for a text input where it might make sense.  They are only added
          * if the user asks for them in any case.
          *
-        buttonsAllowed: false,
+         buttonsAllowed: false,
 
          */
 
@@ -387,7 +390,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          * The input field returned by makeField() will be saved as this.inputField unless
          * it is set within the makeField() method itself.
          *
-        inputField: undefined,
+         inputField: undefined,
 
          */
 
@@ -432,10 +435,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         activate: function (form, field) {
             field.focus();
 
-            // The 'blurAction' data has been set according to which
-            // buttons were requested.  This does nothing for non-text inputs so
-            // you will have to decide what you want blur to do, if anything.
-            this.blurEvent(field, form, form.data('blurAction'));
+
         },
 
         /**
@@ -477,9 +477,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          * @param blurElement This is the element to set the blur handler on.
          * @param cancelElement These elements will cancel the blur action when clicked.
          * @param action The action to take on blur. This will be 'submit' or 'jip:cancel'.
+         * Can be set to 'ignore' to ensure that it is ignored and default values do not
+         * get used.
          */
         blurEvent: function (blurElement, cancelElement, action) {
-            if (!action) return;
+            if (!action || action == 'ignore') return;
 
             var onBlur = function (ev) {
                 var t = setTimeout(function () {
@@ -496,7 +498,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             blurElement.on('blur', onBlur);
         }
     };
-
+    editorBase.base = editorBase;
 
     // The field editors can be overridden or added to
 	$.fn[pluginName].editors = {
