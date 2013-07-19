@@ -161,13 +161,19 @@
 
 				// Now we can setup handlers and focus or otherwise activate the field.
 
-				form.on("jip:submit submit", function(ev) {
-					self.submit(editor, opts);
-					return false;
-				})
+				form
+						.on("jip:submit submit", function(ev) {
+							self.submit(editor, opts);
+							return false;
+						})
 						.on("jip:cancel", function(ev) {
 							self.cancel();
 							return false;
+						})
+						.on("keyup", function(ev) {
+							if (ev.keyCode == 27) {
+								self.cancel();
+							}
 						});
 
 				editor.activate(form, field);
