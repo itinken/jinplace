@@ -1,38 +1,38 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>jinplace qunit tests</title>
-		<link rel="stylesheet" href="qunit.css">
-		<script src="jquery-1.10.1.js"></script>
-		<script src="../js/jinplace.js"></script>
-	</head>
-	<body>
-		<div id="qunit"></div>
-		<div id="qunit-fixture"></div>
-		<script src="qunit.js"></script>
+<head>
+    <meta charset="utf-8">
+    <title>jinplace qunit tests</title>
+    <link rel="stylesheet" href="qunit.css">
+    <script src="jquery-1.10.1.js"></script>
+    <script src="../js/jinplace.js"></script>
+</head>
+<body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+<script src="qunit.js"></script>
 
-		<script>
-			// Timeout to wait for blur events in ms.  In case we have to
-			// change it.
-			var BLUR_TIMEOUT = 310;
+<script>
+    // Timeout to wait for blur events in ms.  In case we have to
+    // change it.
+    var BLUR_TIMEOUT = 310;
 
-            // sync mock up of the ajax call.
-            $.ajax = function(url, opts) {
-                console.log('AJAX', url, opts.data);
+    // sync mock up of the ajax call.
+    $.ajax = function(url, opts) {
+        console.log('AJAX', url, opts.data);
 
-                var d = $.Deferred();
-                d.done($.proxy(opts.success, opts.context));
-                d.fail($.proxy(opts.error, opts.context));
-                d.resolveWith(opts.context, [opts.data.value]);
-                return d.promise();
-            };
-		</script>
+        var d = $.Deferred();
+        d.done($.proxy(opts.success, opts.context));
+        d.fail($.proxy(opts.error, opts.context));
+        d.resolveWith(opts.context, [opts.data.value]);
+        return d.promise();
+    };
+</script>
 
-        <script src="input.js"></script>
-        <script src="textarea.js"></script>
-        <script src="select.js"></script>
+<script src="input.js"></script>
+<script src="textarea.js"></script>
+<script src="select.js"></script>
 
-        <script src="placeholder.js"></script>
-	</body>
+<script src="placeholder.js"></script>
+</body>
 </html>
