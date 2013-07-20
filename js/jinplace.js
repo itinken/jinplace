@@ -504,7 +504,9 @@
 			blurElement.on('blur', onBlur);
 		}
 	};
-	editorBase.base = editorBase;
+
+	// The base implementation that can be extended. This is normally handled automatically.
+	$.fn[pluginName].editorBase = editorBase;
 
 	// The field editors can be overridden or added to
 	$.fn[pluginName].editors = {
