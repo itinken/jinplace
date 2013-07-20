@@ -21,6 +21,23 @@
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * See (http://jquery.com/).
+ * @name jQuery
+ * @class
+ * See the jQuery Library  (http://jquery.com/) for full details.  This just
+ * documents the function and classes that are added to jQuery by this plug-in.
+ */
+
+/**
+ * See (http://jquery.com/)
+ * @name fn
+ * @class
+ * See the jQuery Library  (http://jquery.com/) for full details.  This just
+ * documents the function and classes that are added to jQuery by this plug-in.
+ * @memberOf jQuery
+ */
+
 //noinspection JSUnnecessarySemicolon
 ;
 //noinspection JSUnusedLocalSymbols
@@ -46,7 +63,12 @@
 		['placeholder', 'nil']  // will be removed at v1.0
 	];
 
-	// The actual plugin constructor
+	/**
+	 *
+	 * @class jinplace
+	 * @memberOf jQuery.fn
+	 * @constructor
+	 */
 	function JinPlace(element, options) {
 		var $el = this.element = $(element); // The editable element (often a span or div).
 
@@ -69,6 +91,22 @@
 				options,
 				elementOptions);
 
+		/**
+		 * @type {{
+		 *   type:!string,
+		 *   url:string,
+		 *   data:string,
+		 *   loadurl:string,
+		 *   object:string,
+		 *   attribute:string,
+		 *   okButton:string,
+		 *   cancelButton:string,
+		 *   inputClass:string,
+		 *   activator:!object,
+		 *   textOnly:boolean,
+		 *   placeholder:string
+		 * }}
+		 */
 		this.opts = opts;
 
 		this.bindElement(opts);
@@ -203,8 +241,11 @@
 				attribute: opts.attribute
 			};
 
-			if (value)
+			if (typeof value == 'string') {
 				params.value = value;
+			} else if ($.isPlainObject(value)) {
+				$.extend(params, value);
+			}
 
 			return params;
 		},
@@ -379,8 +420,6 @@
 	/**
 	 * This is the interface of an editor function. Plugins need only redefine the methods
 	 * or data that are appropriate.
-	 *
-	 * @type {{base: undefined, element: undefined, makeField: Function, activate: Function, displayValue: Function}}
 	 */
 	var editorBase = {
 		/**
@@ -401,14 +440,19 @@
 		 */
 
 		/**
+		 * @name blurAction
+		 * @memberOf editorBase
+		 */
+
+		/**
 		 * Make the editing field that will be added to the form. Editing field is
 		 * a general term; it could be a complex control or just a plain <input>.
 		 *
 		 * You may set this.inputField within the body of this method, if you do
 		 * not then it will be set to the value you return.
 		 *
-		 * @param element The original element that we are going to edit.
-		 * @param data The initial data that should be used to initialise the
+		 * @param {jQuery} element The original element that we are going to edit.
+		 * @param {string|Object} data The initial data that should be used to initialise the
 		 * field.  For text inputs this will be just text, but for other types of
 		 * input it may be an object specific to that field.
 		 * @returns The new field wrapped in a jquery object.
@@ -433,15 +477,13 @@
 		 *
 		 * The default implementation is only useful for straight-forward text inputs.
 		 *
-		 * @param form The form your editor is contained in. If you want to avoid
+		 * @param {jQuery} form The form your editor is contained in. If you want to avoid
 		 * events bubbling up, you can stop them here.
-		 * @param field The editing field.  Passed as a convenience so we don't have
+		 * @param {jQuery} field The editing field.  Passed as a convenience so we don't have
 		 * to save it.
 		 */
 		activate: function (form, field) {
 			field.focus();
-
-
 		},
 
 		/**
@@ -450,7 +492,7 @@
 		 *
 		 * The default implementation just calls .val() on the inputField.
 		 *
-		 * @returns {*} The value that should be submitted to the server for this editor.
+		 * @returns {string} The value that should be submitted to the server for this editor.
 		 */
 		value: function () {
 			return this.inputField.val();
@@ -480,9 +522,9 @@
 		 * when you want the blur to be cancelled if there is a click on the control
 		 * or any of its components as will usually be the case.
 		 *
-		 * @param blurElement This is the element to set the blur handler on.
-		 * @param cancelElement These elements will cancel the blur action when clicked.
-		 * @param action The action to take on blur. This will be 'submit' or 'jip:cancel'.
+		 * @param {jQuery} blurElement This is the element to set the blur handler on.
+		 * @param {jQuery} cancelElement These elements will cancel the blur action when clicked.
+		 * @param {string} action The action to take on blur. This will be 'submit' or 'jip:cancel'.
 		 * Can be set to 'ignore' to ensure that it is ignored and default values do not
 		 * get used.
 		 */

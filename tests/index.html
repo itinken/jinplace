@@ -17,9 +17,15 @@
     // change it.
     var BLUR_TIMEOUT = 310;
 
+    var ajax_url = '';
+    var ajax_data = {};
+
     // sync mock up of the ajax call.
     $.ajax = function(url, opts) {
         console.log('AJAX', url, opts.data);
+
+        ajax_url = url;
+        ajax_data = opts.data;
 
         var d = $.Deferred();
         d.done($.proxy(opts.success, opts.context));
@@ -33,6 +39,7 @@
 <script src="textarea.js"></script>
 <script src="select.js"></script>
 
+<script src="send.js"></script>
 <script src="placeholder.js"></script>
 </body>
 </html>
