@@ -241,10 +241,10 @@
 				attribute: opts.attribute
 			};
 
-			if (typeof value == 'string') {
-				params.value = value;
-			} else if ($.isPlainObject(value)) {
+			if ($.isPlainObject(value)) {
 				$.extend(params, value);
+			} else if (value !== undefined) {
+				params.value = value;
 			}
 
 			return params;
