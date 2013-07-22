@@ -1,5 +1,16 @@
 
 = News =
+== Version 0.10.1 improved api ==
+'''22 July 2013''' If ok and/or cancel buttons are added, they have a css
+class of jip-button and jip-ok-button or jip-cancel-button as
+appropriate.
+
+API fix for value() methods that return an integer or something other
+than a string or plain object.
+
+Bug fix by sourcecat (@github) for textOnly and placeholder options.
+Tests added for them too.
+
 == Version 0.10.0 improved api ==
 '''20 July 2013''' The api is improved and a section added to the
 documentation about writing a plugin. The API is now close to a
