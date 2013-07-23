@@ -25,7 +25,7 @@
 
 		span.click();
 		var inp = span.find('textarea');
-		equal(inp.val(), orig);
+		equal(inp.html(), orig);
 	});
 
 	test("Submit new value", 2, function() {
@@ -35,7 +35,7 @@
 		span.click();
 
 		var inp = span.find('textarea');
-		inp.val('ZZZ');
+		inp.html('ZZZ');
 
 		click_ok();
 		equal(span.find(':input').length, 0, 'no input');
@@ -47,7 +47,7 @@
 
 		span.click();
 		var inp = span.find('textarea');
-		inp.val('ZZZ');
+		inp.html('ZZZ');
 
 		// $('#other').focus(); does not work
 		inp.blur();
@@ -67,7 +67,7 @@
 
 		span.click();
 		var inp = span.find('textarea');
-		inp.val('ZZZ');
+		inp.html('ZZZ');
 
 		// $('#other').focus(); does not work
 		inp.blur();

@@ -581,6 +581,12 @@
 					field.elastic();
 
 				return field;
+			},
+
+			value: function() {
+				// Although .val() should work with jquery, it fails on a few android
+				// devices. So lets just use .html().
+				return this.inputField.html();
 			}
 		},
 
