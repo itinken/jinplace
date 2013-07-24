@@ -44,6 +44,23 @@
 (function ($, window, document, undefined) {
 	var pluginName = "jinplace";
 
+	/**
+	 * @typedef {object} Options
+	 * @class Options
+	 * @property {!string} type - The type of field. Defaults to 'input'
+	 * @property {string} url - The url to submit to. Defaults to same page
+	 * @property {string} data - Text or JSON data as initial editing text
+	 * @property {string} loadurl - The URL to load content for editing
+	 * @property {string} object - A name to pass back on submit
+	 * @property {string} attribute - Another name to pass back on submit
+	 * @property {string} okButton - Create a submit button with this name
+	 * @property {string} cancelButton - Create a cancel button with this name
+	 * @property {string} inputClass - A css class that is added to the input field
+	 * @property {jQuery|string} activator - Object (or css selector) for object to activate editing. Defaults to the element itself.
+	 * @property {boolean} textOnly - When true (the default) text returned from server is displayed literally and not as html.
+	 * @property {string} placeholder - Text to display in empty elements.
+	 */
+
 	var option_list = ['type',
 		'url',
 		'data',
@@ -64,10 +81,14 @@
 	];
 
 	/**
+	 * The actual constructor of the JinPlace object.
 	 *
 	 * @class jinplace
 	 * @memberOf jQuery.fn
 	 * @constructor
+	 *
+	 * @property {jQuery} element - The element containing plain text to be edited.
+	 * @property {Options} opts - The final set of options.
 	 */
 	function JinPlace(element, options) {
 		var $el = this.element = $(element); // The editable element (often a span or div).
@@ -91,22 +112,6 @@
 				options,
 				elementOptions);
 
-		/**
-		 * @type {{
-		 *   type:!string,
-		 *   url:string,
-		 *   data:string,
-		 *   loadurl:string,
-		 *   object:string,
-		 *   attribute:string,
-		 *   okButton:string,
-		 *   cancelButton:string,
-		 *   inputClass:string,
-		 *   activator:!object,
-		 *   textOnly:boolean,
-		 *   placeholder:string
-		 * }}
-		 */
 		this.opts = opts;
 
 		this.bindElement(opts);
@@ -117,9 +122,8 @@
 		/**
 		 * Get the options that are set on the editable element with the data-* attributes.
 		 *
-		 * @param $el The element that is being made editable.
+		 * @param {jQuery} $el The element that is being made editable.
 		 */
-		// Options are set using data- attributes of the element.
 		elementOptions: function ($el) {
 			var opts = {};
 			function upperToHyphenLower(match) {
@@ -143,6 +147,13 @@
 			return opts;
 		},
 
+		/**
+		 * Prepare the activator element to receive click events.
+		 *
+		 * This involves setting placeholder text if the element is empty.
+		 *
+		 * @param {Options} opts - The editor options.
+		 */
 		bindElement: function(opts) {
 			// Remove any existing handler we set and bind to the activation click handler.
 			opts.activator
@@ -160,6 +171,7 @@
 		 * so is not directly useful.  Things are always set up so that 'this' is this object
 		 * and not the element that the click occurred on.
 		 *
+		 * @this {JinPlace}
 		 * @param ev The event.
 		 */
 		clickHandler: function(ev) {
@@ -177,10 +189,11 @@
 			var self = this,
 					opts = self.opts;
 
-			// A new editor is created for every activation. So it is OK to keep instance
-			// data on it.
-			var editor = $.fn[pluginName].editors[opts.type];
-			editor = $.extend({}, editorBase, editor);
+			/** A new editor is created for every activation. So it is OK to keep instance
+			 * data on it.
+			 * @type {editorBase}
+			 */
+			var editor = $.extend({}, editorBase, $.fn[pluginName].editors[opts.type]);
 
 			// Save original for use when cancelling.
 			self.origValue = self.element.html();
@@ -230,9 +243,10 @@
 		/**
 		 * Get the parameters that will be sent in the ajax call to the server.
 		 * Called for both the url and loadurl cases.
-		 * @param opts The options from the element and config settings.
-		 * @param value The value of the control as returned by editor.value().
-		 * @returns {{id: string, object: *, attribute: *}}
+		 *
+		 * @param {Options} opts The options from the element and config settings.
+		 * @param {*} value The value of the control as returned by editor.value().
+		 * @returns {object}
 		 */
 		requestParams: function(opts, value) {
 			var self = this;
@@ -257,6 +271,8 @@
 		 * 2. data-loadurl (or options.loadurl) a request is made to the given url and the
 		 *    resulting data is used.
 		 * 3. The existing contents of 'element'.
+		 *
+		 * @param {Options} opts
 		 */
 		fetchData: function(opts) {
 			var data, self = this;
@@ -289,6 +305,8 @@
 
 		/**
 		 * Throw away any edits and return the element to its original text.
+		 *
+		 * @return {void}
 		 */
 		cancel: function() {
 			var self = this;
@@ -302,6 +320,10 @@
 		 * Called to submit the changed data to the server.
 		 *
 		 * This method is always called with 'this' set to this object.
+		 *
+		 * @this {JinPlace}
+		 * @param {editorBase} editor
+         * @param {Options} opts
 		 */
 		submit: function (editor, opts) {
 			var self = this;
@@ -313,19 +335,21 @@
 				error: self.cancel
 			})
 					.done(function(data) {
-						this.onUpdate(editor.displayValue(data));
+						this.onUpdate(opts, editor.displayValue(data));
 					});
 		},
 
 		/**
 		 * The server has received our data and replied successfully and the new data to
 		 * be displayed is available.
-		 * @param data The data to display from the server.
+		 *
+		 * @param {Options} opts The element options.
+		 * @param {string} data The data to display from the server.
 		 */
-		onUpdate: function(data) {
+		onUpdate: function(opts, data) {
 			var self = this;
 			self.setContent(data);
-			self.bindElement(self.opts);
+			self.bindElement(opts);
 		},
 
 		/**
@@ -359,11 +383,13 @@
 		});
 	};
 
-	// These are the plugin defaults. You can override these if required.
+	/** These are the plugin defaults. You can override these if required.
+	 * @type {Options}
+	 */
 	$.fn[pluginName].defaults = {
 		url: document.location.pathname,
 		type: "input",
-		textOnly: true,
+		textOnly: 2,
 		placeholder: '[ --- ]'
 	};
 
@@ -371,8 +397,8 @@
 	 * Create a form for the editing area.  The input element is added and if buttons
 	 * are required then they are added. Event handlers are set up.
 	 *
-	 * @param opts The options for this editor.
-	 * @param inputField The newly created input field.
+	 * @param {Options} opts The options for this editor.
+	 * @param {jQuery} inputField The newly created input field.
 	 * @param {boolean} [buttons] True if buttons can be added.  Whether buttons really are added
 	 * depends on the options and data-* attributes.
 	 * @returns {jQuery} The newly created form element.
@@ -392,8 +418,8 @@
 	/**
 	 * Add any requested buttons to the output.
 	 *
-	 * @param form The form that is being created.
-	 * @param opts The options set for this editor.
+	 * @param {jQuery} form The form that is being created.
+	 * @param {Options} opts The options set for this editor.
 	 */
 	var addButtons = function (form, opts) {
 		var setHandler = function (button, action) {
@@ -422,6 +448,7 @@
 	/**
 	 * This is the interface of an editor function. Plugins need only redefine the methods
 	 * or data that are appropriate.
+	 * @class
 	 */
 	var editorBase = {
 		/**
@@ -429,21 +456,26 @@
 		 * true for a text input where it might make sense.  They are only added
 		 * if the user asks for them in any case.
 		 *
-		 buttonsAllowed: false,
-
+		 * @name editorBase.buttonsAllowed,
+		 * @type {boolean}
 		 */
 
 		/**
 		 * The input field returned by makeField() will be saved as this.inputField unless
 		 * it is set within the makeField() method itself.
 		 *
-		 inputField: undefined,
-
+		 * @name editorBase.inputField
+		 * @type {jQuery}
 		 */
 
 		/**
-		 * @name blurAction
-		 * @memberOf editorBase
+		 * Set up default blur handlers to cause the given action of 'submit' or 'cancel'.
+		 * If the default mechanism is not appropriate, then define this with the value 'ignore'
+		 * and no default processing will be provided and you must set it up yourself if you
+		 * want any action on blur.
+		 *
+		 * @name editorBase.blurAction
+		 * @type {string}
 		 */
 
 		/**
@@ -457,7 +489,7 @@
 		 * @param {string|Object} data The initial data that should be used to initialise the
 		 * field.  For text inputs this will be just text, but for other types of
 		 * input it may be an object specific to that field.
-		 * @returns The new field wrapped in a jquery object.
+		 * @returns {jQuery} The new field wrapped in a jquery object.
 		 */
 		makeField: function (element, data) {
 			// This is an implementation for <input type="text">. You would almost
@@ -511,9 +543,9 @@
 		 * For a select list, you might have [['1', 'blue'], ['2', 'green']]; if the server
 		 * returns '2', then you return 'green' from this method.
 		 *
-		 * @param data The data as returned by the server which is to be used to populate
-		 * the page after the edit control is removed.
-		 * @returns {*} The data modified in any way that is appropriate.
+		 * @param {string} data The data as returned by the server which is to be used to populate
+		 * the page after the edit control is removed. A string, but could be a JSON string.
+		 * @returns {string} The data modified in any way that is appropriate.
 		 */
 		displayValue: function (data) {
 			return data;
@@ -552,7 +584,11 @@
 	// The base implementation that can be extended. This is normally handled automatically.
 	$.fn[pluginName].editorBase = editorBase;
 
-	// The field editors can be overridden or added to
+
+	/** The field editors can be overridden or added to
+	 *
+	 * @type {Object.<string, editorBase>}
+	 */
 	$.fn[pluginName].editors = {
 
 		/**
@@ -562,13 +598,17 @@
 			buttonsAllowed: true
 		},
 
-		/**
+		/*
 		 * A multi-line text area field.
 		 */
 		textarea: {
 			buttonsAllowed: true,
 
 			makeField: function (element, data) {
+				/**
+				 * Textarea jQuery object.
+				 * @property {function=} elastic - set if elastic plugin is installed.
+				 */
 				var field = $("<textarea>")
 						.css({
 							'min-width': element.width(),
@@ -590,7 +630,7 @@
 			}
 		},
 
-		/**
+		/*
 		 * A selection.  This is slightly more complex as we have to pass in the possible
 		 * values so that one can be selected.
 		 */
