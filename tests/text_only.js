@@ -17,8 +17,8 @@
 		div.click();
 
 		var textarea = div.find(':input');
-		var orig = textarea.html();
-		textarea.html(orig.replace(/Hello/, 'Hello<li>World'));
+		var orig = textarea.val();
+		textarea.val(orig.replace(/Hello/, 'Hello<li>World'));
 		submit();
 
 		ok(div.text().indexOf('World') > 0, 'text changed');
@@ -31,8 +31,8 @@
 		div.click();
 
 		var textarea = div.find(':input');
-		var orig = textarea.html();
-		textarea.html(orig.replace(/Hello/, 'Hello<li>World'));
+		var orig = textarea.val();
+		textarea.val(orig.replace(/Hello/, 'Hello<li>World'));
 		submit();
 
 		ok(div.text().indexOf('World') > 0, 'text changed');
@@ -46,8 +46,8 @@
 		div.click();
 
 		var textarea = div.find(':input');
-		var orig = textarea.html();
-		textarea.html(orig.replace(/Hello/, 'Hello<li>World'));
+		var orig = textarea.val();
+		textarea.val(orig.replace(/Hello/, 'Hello<li>World'));
 		submit();
 
 		ok(div.text().indexOf('World') > 0, 'text changed');
