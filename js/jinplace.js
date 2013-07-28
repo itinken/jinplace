@@ -143,7 +143,9 @@
 				opts[new_name] = opts[new_name] || $el.attr(make_attr_name(newold[1]));
 			});
 
-			opts.textOnly = opts.textOnly === true || opts.textOnly !== 'false';
+			if (opts.textOnly)
+				opts.textOnly = opts.textOnly !== 'false';
+
 			return opts;
 		},
 
