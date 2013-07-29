@@ -220,12 +220,12 @@
 							return false;
 						})
 						.on("jip:cancel", function(ev) {
-							self.cancel();
+							self.cancel(editor);
 							return false;
 						})
 						.on("keyup", function(ev) {
 							if (ev.keyCode == 27) {
-								self.cancel();
+								self.cancel(editor);
 							}
 						});
 
@@ -308,11 +308,14 @@
 		/**
 		 * Throw away any edits and return the element to its original text.
 		 *
+		 * @param {editorBase} editor The element editor.
 		 * @return {void}
 		 */
-		cancel: function() {
+		cancel: function(editor) {
 			var self = this;
 			self.element.html(self.origValue);
+
+			editor.finish();
 
 			// Rebind the element for the next time
 			self.bindElement(self.opts);
@@ -334,10 +337,16 @@
 				data: self.requestParams(opts, editor.value()),
 				dataType: 'text',
 				context: self,
-				error: self.cancel
+
+				// iOS 6 has a dreadful bug where POST requests are not sent to the
+				// server if they are in the cache.
+				headers: {'Cache-Control': 'no-cache'} // Apple!
 			})
 					.done(function(data) {
-						this.onUpdate(opts, editor.displayValue(data));
+						this.onUpdate(editor, opts, data);
+					})
+					.fail(function() {
+						this.cancel(editor);
 					});
 		},
 
@@ -345,12 +354,14 @@
 		 * The server has received our data and replied successfully and the new data to
 		 * be displayed is available.
 		 *
+		 * @param {editorBase} editor The element editor.
 		 * @param {Options} opts The element options.
 		 * @param {string} data The data to display from the server.
 		 */
-		onUpdate: function(opts, data) {
+		onUpdate: function(editor, opts, data) {
 			var self = this;
-			self.setContent(data);
+			self.setContent(editor.displayValue(data));
+			editor.finish();
 			self.bindElement(opts);
 		},
 
@@ -447,6 +458,7 @@
 		}
 	};
 
+	//noinspection UnnecessaryLocalVariableJS
 	/**
 	 * This is the interface of an editor function. Plugins need only redefine the methods
 	 * or data that are appropriate.
@@ -580,7 +592,16 @@
 
 			// Set the handler to our wrapper.
 			blurElement.on('blur', onBlur);
-		}
+		},
+
+		/**
+		 * This is guaranteed to be called after editing is complete and before the element
+		 * is rebound.
+		 *
+		 * @type {function}
+		 * @return {void}
+		 */
+		finish: function() {}
 	};
 
 	// The base implementation that can be extended. This is normally handled automatically.
