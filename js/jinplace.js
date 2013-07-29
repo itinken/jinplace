@@ -616,7 +616,7 @@
 							'min-width': element.width(),
 							'min-height': element.height()
 						})
-						.html(data);
+						.val(data);
 
 
 				if (field.elastic)
