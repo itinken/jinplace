@@ -31,10 +31,15 @@ outf = open('d.html', 'w')
 for line in f.xreadlines():
 
 	if munge > 0:
-		m = re.match(r'^([ \t]*)</div>', line)
+		m = re.match(r'^([ \t]*)</(pre|div)>', line)
 		if m:
 			munge -= 1
-		m = re.match(r'^[ \t]*<div', line)
+			if munge == 0:
+				if for_edit:
+					line = line.replace('</pre>', '</div>')
+				else:
+					line = line.replace('</div>', '</pre>')
+		m = re.match(r'^[ \t]*<(pre|div)', line)
 		if m:
 			munge += 1
 
@@ -44,9 +49,13 @@ for line in f.xreadlines():
 		else:
 			line = re.sub('<', '&lt;', line)
 
-	m = re.match(r'^([ \t]*)<div .*class="example"', line)
+	m = re.match(r'^([ \t]*)<(pre|div) .*class="example"', line)
 	if m:
 		munge += 1
+		if for_edit:
+			line = line.replace('<pre ', '<div ')
+		else:
+			line = line.replace('<div ', '<pre ')
 
 	print >>outf, line,
 

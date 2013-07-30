@@ -164,13 +164,13 @@ input.short {
 
 <h1>Demo of the jinplace jquery plugin</h1>
 <div id="invalid" class="warn">
-  Error: Something has gone wrong and at least one of the required javascript libraries has not loaded.
+  <p>ERROR: Something has gone wrong and at least one of the required javascript libraries has not loaded.
   Please check this before going further.
 </div>
 <!--[if lte IE 8]>
-<div class="warn">
-  Jinplace and this demo are fully functional on IE6-8.
-  The demo does not look as good on the earlier browsers.
+<div>
+  <p>Jinplace and this demo are fully functional on IE6-8.
+  However the demo does not look quite as good on the earlier browsers.
 </div>
 <![endif]-->
 
@@ -222,7 +222,7 @@ text to modify it.
   <li>Hiting return normally submits the data too</li>
 </ul>
 
-<div class="example">
+<pre class="example">
   Firstname &lt;span
     class="editable"
     data-url="/internal/person/firstname">John&lt;/span>
@@ -232,7 +232,7 @@ text to modify it.
   &lt;script>
     $('.editable').jinplace();
   &lt;/script>
-</div>
+</pre>
 </div>
 
 <div class="try-it">
@@ -249,14 +249,14 @@ type to <em>textarea</em>.
   <li>Set <em>data-type</em> to <kbd>textarea</kbd></li>
   <li>Everything else is the same as for regular inputs</li>
 </ul>
-<div class="example">
+<pre class="example">
 
   &lt;div class="editable"
     data-type="textarea" data-url="/internal/person/favourites">
     Wild geese that fly with the moon on their wings
   &lt;/div>
 
-</div>
+</pre>
 </div>
 
 <div class="try-it">
@@ -276,12 +276,12 @@ attribute.
   <li>The data is a JSON string.</li>
 </ul>
 <p>The JSON would normally be generated when the page is built.
-<div class="example">
+<pre class="example">
   Direction:
   &lt;span class="editable" data-type="select" data-url="/internal/person/direction"
         data-data='[["E", "East"], ["W", "West"]]'>East&lt;/span>
 
-</div>
+</pre>
 </div>
 
 <div class="try-it">
@@ -299,13 +299,13 @@ You can add an OK button which must be clicked to accept the change.
   <li>Clicking outside the field, cancels
 </ul>
 
-<div class="example">
+<pre class="example">
   Last name &lt;span class="editable"
                  data-url="/internal/person/lastname"
                  data-input-class="short"
                  data-ok-button="Go">Smith&lt;/span>
 
-</div>
+</pre>
 </div>
 
 <div class="try-it">
@@ -326,7 +326,7 @@ You can also add a cancel button, again with the text that you specify.
 <p>This is particularly useful for large text areas where it is easy
 to lose a lot of work it you accidentally lose focus.</p>
 
-<div class="example">
+<pre class="example">
   Some of their favourite things
   &lt;div class="editable"
        data-url="/internal/person/favourites"
@@ -336,7 +336,7 @@ to lose a lot of work it you accidentally lose focus.</p>
     Wild geese that fly with the moon on their wings
   &lt;/div>
 
-</div>
+</pre>
 </div>
 
 <div class="try-it">
@@ -356,7 +356,7 @@ Any element can be used.
     that element is included in the selector!)
   <li>The data-input-class sets the class that will be applied to the input field</li>
 </ul>
-<div class="example">
+<pre class="example">
   First name:
   &lt;span class="editable"
         data-url="/internal/person/firstname"
@@ -365,7 +365,7 @@ Any element can be used.
       >John&lt;/span>
 
   &lt;span id="edit-activator" class="button">Edit&lt;/span>
-</div>
+</pre>
 </div>
 
 <div class="try-it">
@@ -389,7 +389,7 @@ You can of course use a mixture of both as you see fit.
 </ul>
 <p>There are several more settings and most of them can be used on either the html element
 or in the call to .jinplace().
-<div class="example">
+<pre class="example">
   &lt;p>Firstname: &lt;span class="editable2" data-attribute="firstname">Mary&lt;/span>
 
   &lt;p>Lastname:  &lt;span class="editable2" data-attribute="lastname">Jones&lt;/span>
@@ -409,7 +409,7 @@ or in the call to .jinplace().
       placeholder: '[Edit]'
     });
   &lt;/script>
-</div>
+</pre>
 </div>
 
 <div class="try-it">
@@ -433,7 +433,7 @@ text version, but display the html version of the page.
   <li>Using the loadurl config setting</li>
 </ul>
 
-<div class="example">
+<pre class="example">
   &lt;p>Firstname: &lt;span class="editable3" data-attribute="firstname">Mary&lt;/span>
 
   &lt;p>Lastname:  &lt;span class="editable3" data-attribute="lastname">Jones&lt;/span>
@@ -452,7 +452,7 @@ text version, but display the html version of the page.
       loadurl: '/internal/person2'
     });
   &lt;/script>
-</div>
+</pre>
 </div>
 
 <div class="try-it">
