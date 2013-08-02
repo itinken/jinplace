@@ -27,7 +27,7 @@ mixture of the two depending on your needs.
 * Directly supports text, textarea and select fields.
 * Other kinds of input editors can be written as plugins
 see [https://bitbucket.org/itinken/jinplace-extra jinplace-extra]
-(or [http://github.com/itinken/jinplace-extra github mirror])
+(or [https://github.com/itinken/jinplace-extra github mirror])
 
 * Text like editing fields can optionally have OK and Cancel buttons
 with configurable text.

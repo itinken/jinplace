@@ -24,10 +24,10 @@ mixture of the two depending on your needs.
 * Can also use javascript configuration.
 * Framework independent.
 * Works with IE6-8 and all modern browsers, including mobile.
-* Supports text input fields.
-* Supports textarea input fields.
-* Supports select dropdown fields.
-* Other kinds of input fields can be written as plugins
+* Directly supports text, textarea and select fields.
+* Other kinds of input editors can be written as plugins
+see [jinplace-extra](https://bitbucket.org/itinken/jinplace-extra)
+(or [github mirror](https://github.com/itinken/jinplace-extra))
 * Text like editing fields can optionally have OK and Cancel buttons
 with configurable text.
 * Data to be edited can be supplied as an attribute of the element,
