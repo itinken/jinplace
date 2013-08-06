@@ -23,8 +23,9 @@
 	module('send', {
 		setup: function() {
 			ajax_data = {};  // defined in index.html
-			qfix.append(span);
+
 			span = $('<span data-ok-button="OK">Hi</span>');
+			qfix.append(span);
 		}
 	});
 
@@ -62,7 +63,7 @@
 		equal(ajax_data.value, 'vv');
 	});
 
-	test('when value returns object, values are sent', function() {
+	test('when value returns object, values are sent', 5, function() {
 		// Create a custom input editor that returns an object.
 		$.fn.jinplace.editors.test_value_editor = {
 			value: function() {
@@ -86,5 +87,77 @@
 
 		// and value is not set
 		equal(ajax_data.value, undefined);
+	});
+
+	test('submit to function returning string', 3, function() {
+		var rval = {};
+
+		var cancelVal = 'test for function';
+		span.attr('data-cancel-button', cancelVal);
+
+		span.jinplace({
+			url: function(value, opts) {
+				rval.value = value;
+				rval.opts = opts;
+
+				return value;
+			}
+		});
+
+		span.click();
+		var value = 'submitted value';
+		submit(value);
+
+		equal(value, rval.value);
+		equal(cancelVal, rval.opts.cancelButton);
+		equal(span.text(), value);
+	});
+
+	test('submit to function returning promise', 3, function() {
+		var rval = {};
+
+		var cancelVal = 'test for function';
+		span.attr('data-cancel-button', cancelVal);
+
+		span.jinplace({
+			url: function(value, opts) {
+				rval.value = value;
+				rval.opts = opts;
+
+				var d = $.Deferred();
+				d.resolve('X' + value + 'X');
+				return d.promise();
+			}
+		});
+
+		span.click();
+		var value = 'submitted value';
+		submit(value);
+
+		equal(value, rval.value);
+		equal(cancelVal, rval.opts.cancelButton);
+		equal(span.text(), 'X'+value+'X');
+	});
+
+	test('submit to function returning undefined', 3, function() {
+		var rval = {};
+
+		var cancelVal = 'test for function';
+		span.attr('data-cancel-button', cancelVal);
+
+		span.jinplace({
+			url: function(value, opts) {
+				rval.value = value;
+				rval.opts = opts;
+			}
+		});
+
+		span.click();
+		var value = 'submitted value';
+		submit(value);
+
+		equal(value, rval.value);
+		equal(cancelVal, rval.opts.cancelButton);
+		equal(span.text(), "Hi");
 	});
 })();

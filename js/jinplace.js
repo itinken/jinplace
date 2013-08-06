@@ -332,21 +332,38 @@
 		 */
 		submit: function (editor, opts) {
 			var self = this;
-			$.ajax(opts.url, {
-				type: "post",
-				data: self.requestParams(opts, editor.value()),
-				dataType: 'text',
-				context: self,
+			var promise;
 
-				// iOS 6 has a dreadful bug where POST requests are not sent to the
-				// server if they are in the cache.
-				headers: {'Cache-Control': 'no-cache'} // Apple!
-			})
-					.done(function(data) {
-						this.onUpdate(editor, opts, data);
+			if (typeof opts.url == 'function') {
+				var rval = opts.url.call(undefined, editor.value(), opts);
+
+				if (rval && typeof rval.promise == 'function')
+					promise = rval;
+				else if (typeof rval == 'string') {
+					promise = $.Deferred().resolve(rval).promise();
+				} else {
+					promise = $.Deferred().reject('bad return from url callback').promise();
+				}
+
+			} else {
+
+				promise = $.ajax(opts.url, {
+					type: "post",
+					data: self.requestParams(opts, editor.value()),
+					dataType: 'text',
+					context: self,
+
+					// iOS 6 has a dreadful bug where POST requests are not sent to the
+					// server if they are in the cache.
+					headers: {'Cache-Control': 'no-cache'} // Apple!
+				});
+			}
+
+			promise .done(function(data) {
+						self.onUpdate(editor, opts, data);
 					})
 					.fail(function() {
-						this.cancel(editor);
+						self.cancel(editor);
 					});
 		},
 
