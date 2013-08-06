@@ -30,7 +30,7 @@
 	"bugs": "https://bitbucket.org/itinken/jinplace/issues",
 
 	"dependencies": {
-		"jquery": ">=1.7"
+		"jquery-untouched": ">=1.7"
 	},
 
 	"devDependencies": {
