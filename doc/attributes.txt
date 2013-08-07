@@ -42,7 +42,7 @@ $('.editable').jinplace({
 	});
 </pre>
 
-If the function returns undefined, then the edit is cancelled
+NOT IMPLEMENTED: If the function returns undefined, then the edit is cancelled
 and the element content returns to its original state.
 
 You can also return a 'promise' from the function. This is useful if for
