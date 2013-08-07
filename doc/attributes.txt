@@ -24,43 +24,6 @@ It must be a page that can accept submitted form data.
   <span class="editable" data-url="/api/modify/188/name">Jo</span>
 </pre>
 
-If 'url' is specified as a config setting, then it can be a function
-instead of a string.  The function is called on submit instead of the
-ajax call.
-
-This function is called with two arguments, the value as submitted from
-the form and the jinplace options for the element.  It should return the
-new value as a string or a promise that resolves to a string that will be
-used to display the original element text. Inside the function, 'this' should
-be considered to be undefined.
-
-<pre code=js>
-$('.editable').jinplace({
-	url: function(value, opts) {
-		return value;
-	}
-	});
-</pre>
-
-NOT IMPLEMENTED: If the function returns undefined, then the edit is cancelled
-and the element content returns to its original state.
-
-You can also return a 'promise' from the function. This is useful if for
-example you want to make a different kind of ajax call than the default
-one. The promise should resolve to a string value.
-
-<pre code=js>
-$('.editable').jinplace({
-	url: function(value, opts) {
-		return $.ajax('/some/url', {
-					type: "put",
-					data: {item: opts.attribute, object: opts.object},
-					dataType: 'text',
-				});
-	}
-	});
-</pre>
-
 ===data-type===
 The type of form element to be created. Can be one of 'input' for a
 regular text input, 'select' for a select dropdown box, or 'textarea'
@@ -197,7 +160,6 @@ call .jinplace(). The setting name is formed by removing the 'data-'
 prefix and changing hyphenated words with camel case words. So 
 'data-attribute' is 'attribute' and 'data-text-only' is 'textOnly'.
 
-=== How to set ===
 An object can be passed to .jinplace() containing the desired
 settings.
 
@@ -215,5 +177,46 @@ You can also set defaults that will apply to all .jinplace() calls.
 
 <pre code=js>
 $.fn.jinplace.defaults.textOnly = false;
+</pre>
+
+Some settings can only be set this way and not via attributes of
+the element you want to edit. These are listed in the remainder
+of this section.
+
+=== submitFunction ===
+This is a function that is called with two arguments, the value as submitted from
+the form and the jinplace options for the element.  It should return the
+new value as a string or a promise that resolves to a string.
+
+This value will be used to replace the original element text. Inside
+the function, 'this' should be considered to be undefined (it will be window for
+a non-strict mode function).
+
+<pre code=js>
+// Minimum example that does nothing.
+$('.editable').jinplace({
+	submitFunction: function(value, opts) {
+		return value;
+	}
+	});
+</pre>
+
+[NOT IMPLEMENTED]: If the function returns undefined, then the edit is cancelled
+and the element content returns to its original state.
+
+You can also return a 'promise' from the function. This is useful if for
+example you want to make a different kind of ajax call than the default
+one. The promise should resolve to a string value.
+
+<pre code=js>
+$('.editable').jinplace({
+	submitFunction: function(value, opts) {
+		return $.ajax(opts.url, {
+					type: "put",
+					data: {item: opts.attribute, object: opts.object},
+					dataType: 'text',
+				});
+	}
+	});
 </pre>
 
