@@ -42,10 +42,8 @@
 		span.attr('id', 'iii');
 		go();
 		submit('vv');
-		console.log('t ID', span.id);
 
 		ok(ajax_data);
-		console.log(ajax_data);
 		equal(ajax_data.value, 'vv');
 		equal(ajax_data.id, 'iii');
 	});
@@ -78,7 +76,6 @@
 		// Create a custom input editor that returns an object.
 		$.fn.jinplace.editors.test_value_editor = {
 			value: function() {
-				console.log('in custom');
 				return {
 					first: 1,
 					second: 2,
