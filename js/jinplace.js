@@ -52,6 +52,7 @@
 	 * @property {string|function} url - The url to submit to. Defaults to same page
 	 * @property {string} data - Text or JSON data as initial editing text
 	 * @property {string} loadurl - The URL to load content for editing
+	 * @property {string} elementId - The ID of the element
 	 * @property {string} object - A name to pass back on submit
 	 * @property {string} attribute - Another name to pass back on submit
 	 * @property {string} okButton - Create a submit button with this name
@@ -66,6 +67,7 @@
 		'url',
 		'data',
 		'loadurl',
+		'elementId',
 		'object',
 		'attribute',
 		'okButton',
@@ -138,6 +140,8 @@
 			$.each(option_list, function(index, value) {
 				opts[value] = $el.attr(make_attr_name(value));
 			});
+
+			opts.elementId = $el.attr('id');
 
 			$.each(fallbacks, function (index, newold) {
 				var new_name = newold[0];
@@ -244,30 +248,6 @@
 		},
 
 		/**
-		 * Get the parameters that will be sent in the ajax call to the server.
-		 * Called for both the url and loadurl cases.
-		 *
-		 * @param {Options} opts The options from the element and config settings.
-		 * @param {*} value The value of the control as returned by editor.value().
-		 * @returns {object}
-		 */
-		requestParams: function(opts, value) {
-			var self = this;
-			var params = { "id": self.element.id,
-				"object": opts.object,
-				attribute: opts.attribute
-			};
-
-			if ($.isPlainObject(value)) {
-				$.extend(params, value);
-			} else if (value !== undefined) {
-				params.value = value;
-			}
-
-			return params;
-		},
-
-		/**
 		 * Fetch the data that will be placed into the editing control.  The data is
 		 * obtained from the following sources in this order:
 		 * 1. data-data (or options.data)
@@ -284,7 +264,7 @@
 
 			} else if (opts.loadurl) {
 				data = $.ajax(opts.loadurl, {
-					data: this.requestParams(opts, undefined),
+					data: requestParams(opts, undefined),
 					context: self
 				});
 
@@ -346,7 +326,7 @@
 			} else {
 				rval = $.ajax(url, {
 					type: "post",
-					data: self.requestParams(opts, value),
+					data: requestParams(opts, editor.value()),
 					dataType: 'text',
 					context: self,
 
@@ -399,6 +379,30 @@
 			}
 		}
 
+	};
+
+	/**
+	 * Get the parameters that will be sent in the ajax call to the server.
+	 * Called for both the url and loadurl cases.
+	 *
+	 * @param {Options} opts The options from the element and config settings.
+	 * @param {*} value The value of the control as returned by editor.value().
+	 * @returns {object}
+	 */
+	var requestParams = function (opts, value) {
+		var params = {
+			"id": opts.elementId,
+			"object": opts.object,
+			attribute: opts.attribute
+		};
+
+		if ($.isPlainObject(value)) {
+			$.extend(params, value);
+		} else if (value !== undefined) {
+			params.value = value;
+		}
+
+		return params;
 	};
 
 	// A really lightweight plugin wrapper around the constructor,

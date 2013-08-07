@@ -40,6 +40,16 @@
 		strictEqual(ajax_data.attribute, undefined);
 	});
 
+	test('id is sent', 3, function () {
+		span.attr('id', 'iii');
+		go();
+		submit('vv');
+
+		ok(ajax_data);
+		equal(ajax_data.value, 'vv');
+		equal(ajax_data.id, 'iii');
+	});
+
 	test('attribute is sent', 3, function() {
 		span.attr('data-attribute', 'aaa');
 		go();
@@ -68,7 +78,6 @@
 		// Create a custom input editor that returns an object.
 		$.fn.jinplace.editors.test_value_editor = {
 			value: function() {
-				console.log('in custom');
 				return {
 					first: 1,
 					second: 2,
