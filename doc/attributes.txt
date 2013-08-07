@@ -24,6 +24,43 @@ It must be a page that can accept submitted form data.
   <span class="editable" data-url="/api/modify/188/name">Jo</span>
 </pre>
 
+If 'url' is specified as a config setting, then it can be a function
+instead of a string.  The function is called on submit instead of the
+ajax call.
+
+This function is called with two arguments, the value as submitted from
+the form and the jinplace options for the element.  It should return the
+new value as a string or a promise that resolves to a string that will be
+used to display the original element text. Inside the function, 'this' should
+be considered to be undefined.
+
+<pre code=js>
+$('.editable').jinplace({
+	url: function(value, opts) {
+		return value;
+	}
+	});
+</pre>
+
+If the function returns undefined, then the edit is cancelled
+and the element content returns to its original state.
+
+You can also return a 'promise' from the function. This is useful if for
+example you want to make a different kind of ajax call than the default
+one. The promise should resolve to a string value.
+
+<pre code=js>
+$('.editable').jinplace({
+	url: function(value, opts) {
+		return $.ajax('/some/url', {
+					type: "put",
+					data: {item: opts.attribute, object: opts.object},
+					dataType: 'text',
+				});
+	}
+	});
+</pre>
+
 ===data-type===
 The type of form element to be created. Can be one of 'input' for a
 regular text input, 'select' for a select dropdown box, or 'textarea'

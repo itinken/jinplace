@@ -1,8 +1,9 @@
 /** @name module */
 /** @name test */
+/** @name {object} ajax_data */
 (function() {
 	var qfix = $('#quint-fixture');
-	var span ;
+	var span;
 
 	function go(el) {
 		el = el || span;
@@ -89,7 +90,7 @@
 		equal(ajax_data.value, undefined);
 	});
 
-	test('submit to function returning string', 3, function() {
+	test('submit to function returning string', 4, function() {
 		var rval = {};
 
 		var cancelVal = 'test for function';
@@ -99,6 +100,7 @@
 			url: function(value, opts) {
 				rval.value = value;
 				rval.opts = opts;
+				rval.thisVal = this;
 
 				return value;
 			}
@@ -111,6 +113,7 @@
 		equal(value, rval.value);
 		equal(cancelVal, rval.opts.cancelButton);
 		equal(span.text(), value);
+		equal(window, rval.thisVal);
 	});
 
 	test('submit to function returning promise', 3, function() {
@@ -124,9 +127,9 @@
 				rval.value = value;
 				rval.opts = opts;
 
-				var d = $.Deferred();
-				d.resolve('X' + value + 'X');
-				return d.promise();
+				return $.Deferred()
+						.resolve('X' + value + 'X')
+						.promise();
 			}
 		});
 
@@ -139,7 +142,7 @@
 		equal(span.text(), 'X'+value+'X');
 	});
 
-	test('submit to function returning undefined', 3, function() {
+	test('submit to function returning undefined', 4, function() {
 		var rval = {};
 
 		var cancelVal = 'test for function';
@@ -149,6 +152,7 @@
 			url: function(value, opts) {
 				rval.value = value;
 				rval.opts = opts;
+				rval.thisVal = this;
 			}
 		});
 
@@ -158,6 +162,26 @@
 
 		equal(value, rval.value);
 		equal(cancelVal, rval.opts.cancelButton);
-		equal(span.text(), "Hi");
+		equal(span.text(), "[ --- ]");
+		equal(window, rval.thisVal);
 	});
+
+	test('submit to function in strict mode', 2, function() {
+		var rval = {};
+
+		span.jinplace({
+			url: function(value, opts) {
+				'use strict';
+				rval.value = value;
+				rval.opts = opts;
+				rval.thisVal = this;
+			}
+		});
+
+		span.click();
+		submit('xyz');
+
+		equal('xyz', rval.value);
+		equal(undefined, rval.thisVal);
+	})
 })();

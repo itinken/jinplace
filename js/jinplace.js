@@ -42,13 +42,14 @@
 ;
 //noinspection JSUnusedLocalSymbols
 (function ($, window, document, undefined) {
+	'use strict';
 	var pluginName = "jinplace";
 
 	/**
 	 * @typedef {object} Options
 	 * @class Options
 	 * @property {!string} type - The type of field. Defaults to 'input'
-	 * @property {string} url - The url to submit to. Defaults to same page
+	 * @property {string|function} url - The url to submit to. Defaults to same page
 	 * @property {string} data - Text or JSON data as initial editing text
 	 * @property {string} loadurl - The URL to load content for editing
 	 * @property {string} object - A name to pass back on submit
@@ -332,24 +333,20 @@
 		 */
 		submit: function (editor, opts) {
 			var self = this;
-			var promise;
+			var value = editor.value();
+			var url = opts.url;
 
-			if (typeof opts.url == 'function') {
-				var rval = opts.url.call(undefined, editor.value(), opts);
+			var rval;
+			if (typeof url == 'function') {
+				rval = url.call(undefined, value, opts);
 
-				if (rval && typeof rval.promise == 'function')
-					promise = rval;
-				else if (typeof rval == 'string') {
-					promise = $.Deferred().resolve(rval).promise();
-				} else {
-					promise = $.Deferred().reject('bad return from url callback').promise();
-				}
-
+				// Special code so that a return of undefined causes a cancel
+//				if (typeof rval == 'undefined')
+//						rval = $.Deferred().reject();
 			} else {
-
-				promise = $.ajax(opts.url, {
+				rval = $.ajax(url, {
 					type: "post",
-					data: self.requestParams(opts, editor.value()),
+					data: self.requestParams(opts, value),
 					dataType: 'text',
 					context: self,
 
@@ -359,7 +356,8 @@
 				});
 			}
 
-			promise .done(function(data) {
+			$.when(rval)
+					.done(function(data) {
 						self.onUpdate(editor, opts, data);
 					})
 					.fail(function() {
