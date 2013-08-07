@@ -75,7 +75,8 @@
 		'inputClass',
 		'activator',
 		'textOnly',
-		'placeholder'
+		'placeholder',
+		'submitFunction'
 	];
 
 	// Pairs of settings new,old.  We look for the old name and set the new.
@@ -313,30 +314,8 @@
 		 */
 		submit: function (editor, opts) {
 			var self = this;
-			var value = editor.value();
-			var url = opts.url;
 
-			var rval;
-			if (typeof url == 'function') {
-				rval = url.call(undefined, value, opts);
-
-				// Special code so that a return of undefined causes a cancel
-//				if (typeof rval == 'undefined')
-//						rval = $.Deferred().reject();
-			} else {
-				rval = $.ajax(url, {
-					type: "post",
-					data: requestParams(opts, editor.value()),
-					dataType: 'text',
-					context: self,
-
-					// iOS 6 has a dreadful bug where POST requests are not sent to the
-					// server if they are in the cache.
-					headers: {'Cache-Control': 'no-cache'} // Apple!
-				});
-			}
-
-			$.when(rval)
+			$.when(opts.submitFunction.call(undefined, editor.value(), opts))
 					.done(function(data) {
 						self.onUpdate(editor, opts, data);
 					})
@@ -422,7 +401,30 @@
 		url: document.location.pathname,
 		type: "input",
 		textOnly: 2,
-		placeholder: '[ --- ]'
+		placeholder: '[ --- ]',
+
+		/**
+         * @name Options.submitFunction
+		 *
+		 * The function to call when an editor form is submitted. This can be supplied as an
+		 * option to completely change the default action.
+		 *
+		 * @param {string} value The value that was submitted.
+		 * @param {Options} opts The options for this element.
+		 * @returns {string|object} Returns a string which will be used to populate the element text or
+		 * a promise that will resolve to a string.
+		 */
+		submitFunction: function(value, opts) {
+			return $.ajax(opts.url, {
+					type: "post",
+					data: requestParams(opts, value),
+					dataType: 'text',
+
+					// iOS 6 has a dreadful bug where POST requests are not sent to the
+					// server if they are in the cache.
+					headers: {'Cache-Control': 'no-cache'} // Apple!
+				});
+		}
 	};
 
 	/**
