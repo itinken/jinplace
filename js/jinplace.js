@@ -384,6 +384,30 @@
 		return params;
 	};
 
+	/**
+	 * Get the parameters that will be sent in the ajax call to the server.
+	 * Called for both the url and loadurl cases.
+	 *
+	 * @param {Options} opts The options from the element and config settings.
+	 * @param {*} value The value of the control as returned by editor.value().
+	 * @returns {object}
+	 */
+	var requestParams = function (opts, value) {
+		var params = {
+			"id": opts.elementId,
+			"object": opts.object,
+			attribute: opts.attribute
+		};
+
+		if ($.isPlainObject(value)) {
+			$.extend(params, value);
+		} else if (value !== undefined) {
+			params.value = value;
+		}
+
+		return params;
+	};
+
 	// A really lightweight plugin wrapper around the constructor,
 	// preventing against multiple instantiations
 	$.fn[pluginName] = function (options) {
