@@ -38,6 +38,18 @@
 		strictEqual(ajax_data.attribute, undefined);
 	});
 
+	test('id is sent', 3, function () {
+		span.attr('id', 'iii');
+		go();
+		submit('vv');
+		console.log('t ID', span.id);
+
+		ok(ajax_data);
+		console.log(ajax_data);
+		equal(ajax_data.value, 'vv');
+		equal(ajax_data.id, 'iii');
+	});
+
 	test('attribute is sent', 3, function() {
 		span.attr('data-attribute', 'aaa');
 		go();

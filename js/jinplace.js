@@ -252,7 +252,8 @@
 		 */
 		requestParams: function(opts, value) {
 			var self = this;
-			var params = { "id": self.element.id,
+			var params = {
+				"id": self.element.attr('id'),
 				"object": opts.object,
 				attribute: opts.attribute
 			};
