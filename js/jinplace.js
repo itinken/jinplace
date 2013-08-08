@@ -61,6 +61,7 @@
 	 * @property {jQuery|string} activator - Object (or css selector) for object to activate editing. Defaults to the element itself.
 	 * @property {boolean} textOnly - When true (the default) text returned from server is displayed literally and not as html.
 	 * @property {string} placeholder - Text to display in empty elements.
+	 * @property {submitFunction} submitFunction - Function that is called to submit the new value.
 	 */
 
 	var option_list = ['type',
@@ -314,8 +315,22 @@
 		 */
 		submit: function (editor, opts) {
 			var self = this;
+			var rval;
+			var rejected = $.Deferred().reject();
 
-			$.when(opts.submitFunction.call(undefined, editor.value(), opts))
+			// Since the function is user defined protect against exceptions and
+			// returning nothing. Either problem causes the edit to be cancelled.
+			// Of course it is possible that some action has been taken depending
+			// on why the exception was thrown, but there is no way to know that.
+			try {
+				rval = opts.submitFunction.call(undefined, editor.value(), opts);
+				if (rval === undefined)
+					rval = rejected;
+			} catch (e) {
+				rval = rejected;
+			}
+
+			$.when(rval)
 					.done(function(data) {
 						self.onUpdate(editor, opts, data);
 					})
@@ -409,6 +424,7 @@
 		 * The function to call when an editor form is submitted. This can be supplied as an
 		 * option to completely change the default action.
 		 *
+		 * @callback submitFunction
 		 * @param {string} value The value that was submitted.
 		 * @param {Options} opts The options for this element.
 		 * @returns {string|object} Returns a string which will be used to populate the element text or

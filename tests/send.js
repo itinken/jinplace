@@ -171,26 +171,22 @@
 
 		equal(value, rval.value);
 		equal(cancelVal, rval.opts.cancelButton);
-		equal(span.text(), "[ --- ]");
+		equal(span.text(), "Hi");
 		equal(window, rval.thisVal);
 	});
 
-	test('submit to function in strict mode', 2, function() {
+	test('submit function throws exception', 1, function() {
 		var rval = {};
 
 		span.jinplace({
 			submitFunction: function(value, opts) {
-				'use strict';
-				rval.value = value;
-				rval.opts = opts;
-				rval.thisVal = this;
+				throw 42;
 			}
 		});
 
 		span.click();
-		submit('xyz');
+		submit('xyx');
 
-		equal('xyz', rval.value);
-		equal(undefined, rval.thisVal);
+		equal('Hi', span.text());
 	})
 })();

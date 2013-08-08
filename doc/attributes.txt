@@ -201,7 +201,7 @@ $('.editable').jinplace({
 	});
 </pre>
 
-[NOT IMPLEMENTED]: If the function returns undefined, then the edit is cancelled
+If the function returns undefined, then the edit is cancelled
 and the element content returns to its original state.
 
 You can also return a 'promise' from the function. This is useful if for
@@ -209,11 +209,15 @@ example you want to make a different kind of ajax call than the default
 one. The promise should resolve to a string value.
 
 <pre code=js>
+// This is roughly what the default processing of submit does.
 $('.editable').jinplace({
 	submitFunction: function(value, opts) {
 		return $.ajax(opts.url, {
-					type: "put",
-					data: {item: opts.attribute, object: opts.object},
+					type: "post",
+					data: {
+					    item: opts.attribute, object: opts.object,
+					    id: opts.elementId, value: value
+					},
 					dataType: 'text',
 				});
 	}

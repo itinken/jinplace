@@ -22,6 +22,13 @@
     var ajax_url = '';
     var ajax_data = {};
 
+    if (!window.console) {
+        var console = {
+            /** @param {...*} var_args */
+            log: function(var_args) {}
+        }
+    }
+
     // sync mock up of the ajax call.
     $.ajax = function(url, opts) {
         console.log('AJAX', url, opts.data);
