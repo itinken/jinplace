@@ -62,6 +62,7 @@
 	 * @property {boolean} textOnly - When true (the default) text returned from server is displayed literally and not as html.
 	 * @property {string} placeholder - Text to display in empty elements.
 	 * @property {submitFunction} submitFunction - Function that is called to submit the new value.
+	 * @property {loadFunction} loadFunction - Function that is called to load the editing data
 	 */
 
 	var option_list = ['type',
@@ -260,16 +261,12 @@
 		 * @param {Options} opts
 		 */
 		fetchData: function(opts) {
-			var data, self = this;
+			var data;
 			if (opts.data) {
 				data = opts.data;
 
 			} else if (opts.loadurl) {
-				data = $.ajax(opts.loadurl, {
-					data: requestParams(opts, undefined),
-					context: self
-				});
-
+				data = opts.loadFunction(opts);
 			} else {
 				data = $.trim(this.element.html());
 			}
@@ -323,7 +320,7 @@
 			// Of course it is possible that some action has been taken depending
 			// on why the exception was thrown, but there is no way to know that.
 			try {
-				rval = opts.submitFunction.call(undefined, editor.value(), opts);
+				rval = opts.submitFunction.call(undefined, opts, editor.value());
 				if (rval === undefined)
 					rval = rejected;
 			} catch (e) {
@@ -380,7 +377,7 @@
 	 * Called for both the url and loadurl cases.
 	 *
 	 * @param {Options} opts The options from the element and config settings.
-	 * @param {*} value The value of the control as returned by editor.value().
+	 * @param {*=} [value] The value of the control as returned by editor.value().
 	 * @returns {object}
 	 */
 	var requestParams = function (opts, value) {
@@ -425,12 +422,12 @@
 		 * option to completely change the default action.
 		 *
 		 * @callback submitFunction
-		 * @param {string} value The value that was submitted.
 		 * @param {Options} opts The options for this element.
+		 * @param {string} value The value that was submitted.
 		 * @returns {string|object} Returns a string which will be used to populate the element text or
 		 * a promise that will resolve to a string.
 		 */
-		submitFunction: function(value, opts) {
+		submitFunction: function(opts, value) {
 			return $.ajax(opts.url, {
 				type: "post",
 				data: requestParams(opts, value),
@@ -439,6 +436,19 @@
 				// iOS 6 has a dreadful bug where POST requests are not sent to the
 				// server if they are in the cache.
 				headers: {'Cache-Control': 'no-cache'} // Apple!
+			});
+		},
+
+		/**
+		 * @name Options.loadFunction
+		 *
+		 * @callback loadFunction
+		 * @param {Options} opts
+		 * @returns {string}
+		 */
+		loadFunction: function(opts) {
+			return $.ajax(opts.loadurl, {
+				data: requestParams(opts)
 			});
 		}
 	};

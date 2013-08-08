@@ -184,9 +184,10 @@ the element you want to edit. These are listed in the remainder
 of this section.
 
 === submitFunction ===
-This is a function that is called with two arguments, the value as submitted from
-the form and the jinplace options for the element.  It should return the
-new value as a string or a promise that resolves to a string.
+This is a function that is called with two arguments, the jinplace
+options for the element and the value as submitted from the form.  It
+should return the new value as a string or a promise that resolves to a
+string.
 
 This value will be used to replace the original element text. Inside
 the function, 'this' should be considered to be undefined (it will be window for
@@ -195,7 +196,7 @@ a non-strict mode function).
 <pre code=js>
 // Minimum example that does nothing.
 $('.editable').jinplace({
-	submitFunction: function(value, opts) {
+	submitFunction: function(opts, value) {
 		return value;
 	}
 	});
@@ -211,7 +212,7 @@ one. The promise should resolve to a string value.
 <pre code=js>
 // This is roughly what the default processing of submit does.
 $('.editable').jinplace({
-	submitFunction: function(value, opts) {
+	submitFunction: function(opts, value) {
 		return $.ajax(opts.url, {
 					type: "post",
 					data: {

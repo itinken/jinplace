@@ -31,16 +31,20 @@
 
     // sync mock up of the ajax call.
     $.ajax = function(url, opts) {
-        console.log('AJAX', url, opts.data);
+      console.log('AJAX', url, opts.data);
 
-        ajax_url = url;
-        ajax_data = opts.data;
+      ajax_url = url;
+      ajax_data = opts.data;
 
-        var d = $.Deferred();
-        d.done($.proxy(opts.success, opts.context));
-        d.fail($.proxy(opts.error, opts.context));
+      var d = $.Deferred();
+      if (opts.type == 'post') {
+        // Return the value we received.
         d.resolveWith(opts.context, [opts.data.value]);
-        return d.promise();
+      } else {
+        // the url is the data we return
+        d.resolveWith(opts.context, [url])
+      }
+      return d.promise();
     };
 </script>
 
@@ -49,6 +53,7 @@
 <script src="select.js"></script>
 
 <script src="send.js"></script>
+<script src="load.js"></script>
 <script src="placeholder.js"></script>
 <script src="text_only.js"></script>
 <script src="buttons.js"></script>

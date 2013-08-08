@@ -106,7 +106,7 @@
 		span.attr('data-cancel-button', cancelVal);
 
 		span.jinplace({
-			submitFunction: function(value, opts) {
+			submitFunction: function(opts, value) {
 				rval.value = value;
 				rval.opts = opts;
 				rval.thisVal = this;
@@ -132,7 +132,7 @@
 		span.attr('data-cancel-button', cancelVal);
 
 		span.jinplace({
-			submitFunction: function(value, opts) {
+			submitFunction: function(opts, value) {
 				rval.value = value;
 				rval.opts = opts;
 
@@ -158,7 +158,7 @@
 		span.attr('data-cancel-button', cancelVal);
 
 		span.jinplace({
-			submitFunction: function(value, opts) {
+			submitFunction: function(opts, value) {
 				rval.value = value;
 				rval.opts = opts;
 				rval.thisVal = this;
@@ -179,7 +179,7 @@
 		var rval = {};
 
 		span.jinplace({
-			submitFunction: function(value, opts) {
+			submitFunction: function(opts, value) {
 				throw 42;
 			}
 		});
