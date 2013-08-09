@@ -21,10 +21,10 @@
 
 <style>
 html {
-    font-size: 100%;
-    overflow-y: scroll;
-    -webkit-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
+  font-size: 100%;
+  overflow-y: scroll;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
 }
 
 body, form, textarea, button, input, select {
@@ -165,22 +165,22 @@ input.short {
 <h1>Demo of the jinplace jquery plugin</h1>
 <div id="invalid" class="warn">
   <p>ERROR: Something has gone wrong and at least one of the required javascript libraries has not loaded.
-  Please check this before going further.
+    Please check this before going further.
 </div>
 <!--[if lte IE 8]>
 <div>
   <p>Jinplace and this demo are fully functional on IE6-8.
-  However the demo does not look quite as good on the earlier browsers.
+    However the demo does not look quite as good on the earlier browsers.
 </div>
 <![endif]-->
 
 <div class="description">
-<p>In this demo there is no actual communication with a remote server.
-Instead all load and save operations take place on a mini database within the
-page itself.
-As you work through the examples and make changes they will appear in
-the table below.
-</p>
+  <p>In this demo there is no actual communication with a remote server.
+    Instead all load and save operations take place on a mini database within the
+    page itself.
+    As you work through the examples and make changes they will appear in
+    the table below.
+  </p>
 </div>
 <div style="float:left; margin-right: 20px;">
   <p>See also <a class="button" href="https://bitbucket.org/itinken/jinplace/wiki/Documentation">Documentation</a> and <a class="button" href="https://bitbucket.org/itinken/jinplace/downloads">Downloads</a></p>
@@ -324,7 +324,7 @@ You can also add a cancel button, again with the text that you specify.
   <li>Clicking outside the field does nothing.
 </ul>
 <p>This is particularly useful for large text areas where it is easy
-to lose a lot of work it you accidentally lose focus.</p>
+  to lose a lot of work it you accidentally lose focus.</p>
 
 <pre class="example">
   Some of their favourite things
@@ -370,7 +370,7 @@ Any element can be used.
 
 <div class="try-it">
   <p>Click on the "edit" button to start. Clicking on the field does
-  not activate the edit controls.</p>
+    not activate the edit controls.</p>
 </div>
 </div>
 
@@ -378,17 +378,17 @@ Any element can be used.
 <div class="description">
 <h2>Full form with settings.</h2>
 <p>As well as configuring by using data attributes on the html elements, you can also
-configure during the .jinplace() call in the usual jQuery manner.
-You can of course use a mixture of both as you see fit.
+  configure during the .jinplace() call in the usual jQuery manner.
+  You can of course use a mixture of both as you see fit.
 <ul>
   <li>The url is set, so it is the same for all fields</li>
   <li>The field to set is determined by the data-attribute</li>
   <li>The 'placeholder' setting is what is shown when the field is blank</li>
   <li>The data-placeholder setting can be given on the html element to override the
-  general one.</li>
+    general one.</li>
 </ul>
 <p>There are several more settings and most of them can be used on either the html element
-or in the call to .jinplace().
+  or in the call to .jinplace().
 <pre class="example">
   &lt;p>Firstname: &lt;span class="editable2" data-attribute="firstname">Mary&lt;/span>
 
@@ -414,7 +414,7 @@ or in the call to .jinplace().
 
 <div class="try-it">
   <p>All the fields can be edited and viewed in the person2 row at the top of
-  this page.</p>
+    this page.</p>
 </div>
 
 </div>
@@ -423,9 +423,9 @@ or in the call to .jinplace().
 <div class="description">
 <h2>Load data from server.</h2>
 <p>Sometimes you want to edit a different version of the text than the one that is
-displayed.
-The canonical example of this is in wiki text where you need to edit the plain
-text version, but display the html version of the page.
+  displayed.
+  The canonical example of this is in wiki text where you need to edit the plain
+  text version, but display the html version of the page.
 <p>There are two ways of doing this</p>
 <ul>
   <li>By using the data-data attribute</li>
@@ -456,10 +456,10 @@ text version, but display the html version of the page.
 </div>
 
 <div class="try-it">
-<p>When you click to edit, the edit text will be fetched from the server.
-So the current (probably stale in this demo) text is disregarded.
-You can view the results of your edits in the person2 row at the top
-of this page.</p>
+  <p>When you click to edit, the edit text will be fetched from the server.
+    So the current (probably stale in this demo) text is disregarded.
+    You can view the results of your edits in the person2 row at the top
+    of this page.</p>
 </div>
 
 </div>
@@ -481,6 +481,12 @@ if (!window.console) {
 }
 
 $(function() {
+  /**
+   * @name ko
+   * @class
+   * @property observable
+   * @property applyBindings
+   */
   // Internal 'server' to keep track of the data that is submitted.
 
   // Our database...
@@ -508,20 +514,24 @@ $(function() {
   ko.applyBindings(db);
 
   // Redefine the $.ajax call to keep the data local to the page.
-  $.ajax = function (url, data) {
-    var params = data.data || {};
+  var dataFunc = function (opts, value) {
+    var params = {
+      id: opts.elementId,
+      object: opts.object,
+      attribute: opts.attribute,
+      value: value
+    };
 
-    console.log("The URL", url, data.type);
-    console.log("The data", data.type, params);
+    var url = opts.url;
 
-    // The value that was passed in if this is a post
-    var value = params.value;
+    console.log("The URL", url);
+    console.log("The data", params);
 
     var m = url.match(new RegExp('/internal(?:/(\\w*)(?:/(\\w*))?)?'));
     var object = m[1] || params.object;
     var field = m[2] || params.attribute;
 
-    if (data.type == 'post') {
+    if (value !== undefined) {
       // set the database value
       db[object][field](value);
 
@@ -536,22 +546,14 @@ $(function() {
           }
         });
         value = JSON.stringify(dir);
-        console.log("choices", value);
       }
     }
 
-    var d = $.Deferred();
-    // Add any success callback
-    if (data.success)
-      d.done($.proxy(data.success, data.context));
-    // Add any failure callback
-    if (data.error)
-      d.fail($.proxy(data.error, data.context));
-
-    // We have the data already so resolve the promise and return it
-    d.resolveWith(data.context, [value]);
-    return d.promise();
+    return value;
   };
+
+  $.fn.jinplace.defaults.submitFunction = dataFunc;
+  $.fn.jinplace.defaults.loadFunction = dataFunc;
 });
 </script>
 
@@ -572,14 +574,14 @@ $(function() {
 
     // Parse the example into html and place it in the try it out column. Voila guaranteed to
     // be the same as the visible example with no repetition.
-	// Note: parseHTML is only available in jQ 1.8+. Use it if available
-	// otherwise fall back to using jQuery(). This demo currently runs
-	// with jQ 1.7
-	var html;
-	if ($.parseHTML)
-		html = $.parseHTML(exampleText, null, true);
-	else
-		html = $(exampleText);
+    // Note: parseHTML is only available in jQ 1.8+. Use it if available
+    // otherwise fall back to using jQuery(). This demo currently runs
+    // with jQ 1.7
+    var html;
+    if ($.parseHTML)
+      html = $.parseHTML(exampleText, null, true);
+    else
+      html = $(exampleText);
     var try_it = $this.parent().parent().find('.try-it');
 
     var heading = $('<h2>Try it out</h2>');
@@ -609,7 +611,7 @@ $(function() {
   });
 </script>
 <script>
-   // If we got here without errors then hide the warning box.
+  // If we got here without errors then hide the warning box.
   if (jQuery && ko && jQuery.fn.jinplace) {
     $('#invalid').hide();
   }

@@ -16,6 +16,7 @@
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="Plain Python 2.7 (/usr/bin/python) interpreter library" level="application" />
     <orderEntry type="library" name="qunit" level="project" />
+    <orderEntry type="library" name="knockout-2.2.1" level="application" />
   </component>
 </module>
 
