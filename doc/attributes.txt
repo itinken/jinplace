@@ -184,10 +184,10 @@ the element you want to edit. These are listed in the remainder
 of this section.
 
 === submitFunction ===
-This is a function that is called with two arguments, the jinplace
-options for the element and the value as submitted from the form.  It
-should return the new value as a string or a promise that resolves to a
-string.
+This is the function that is called to submit the new data.  The function
+is called with two arguments, first the jinplace options for the element
+and second the new value.  It should return the new value as a string or
+a promise that resolves to a string.
 
 This value will be used to replace the original element text. Inside
 the function, 'this' should be considered to be undefined (it will be window for
@@ -225,3 +225,25 @@ $('.editable').jinplace({
 	});
 </pre>
 
+=== loadFunction ===
+This is the function that is called when editing data is fetched from the
+remote server.  It is called with a single argument which is the jinplace
+options for the element.
+
+Note that you have to have a data-loadurl (or the loadurl setting) for
+this function to be called. So a dummy one must be supplied if you have
+no actual use for it.
+
+The default function is roughly as follows.
+
+<pre code=js>
+$.fn.jinplace.defaults.loadFunction = function(opts) {
+	return $.ajax(opts.loadurl, {
+		data: {
+			id: opts.elementId,
+			object: opts.object
+			attribute: opts.attribute,
+		}
+	});
+}
+</pre>

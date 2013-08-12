@@ -1,5 +1,15 @@
 
 = News =
+== Version 0.11.0 submit function ==
+<b>12 Aug 2013</b> Add user defined submit function so that you
+have complete control over what happens when the edited data is
+submitted.
+
+Likewise there is also a user defined load function which is called
+to fetch data for editing when there is a loadurl defined.
+
+Fixed bug where the element id was not being submitted
+
 == Version 0.10.1 improved api ==
 '''22 July 2013''' If ok and/or cancel buttons are added, they have a css
 class of jip-button and jip-ok-button or jip-cancel-button as
