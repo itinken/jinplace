@@ -33,7 +33,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-closurecompiler');
 
-	grunt.registerTask('clean', 'Clean easily rebuilt files', ['clean:tidy']);
+	grunt.registerTask('tidy', 'Clean easily rebuilt files', ['clean:tidy']);
 	grunt.registerTask('clobber', 'Completely clean to checked out state', ['clean:clobber']);
 
 	// Create a distribution set in the dist directory.  Obviously you
