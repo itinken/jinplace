@@ -62,4 +62,22 @@
 		equal(span.text(), 'HI');
 	});
 
+	test('Placeholder with html', 1, function() {
+		span.attr('data-placeholder', '<i>hi</i>');
+		span.jinplace();
+
+		equal(span.text(), 'hi');
+	});
+
+	test('Placeholder with html after submit', 2, function() {
+		span.attr('data-placeholder', '<i>hi</i>');
+		span.jinplace();
+
+		equal(span.text(), 'hi');
+
+		span.click();
+		span.find('form').trigger('jip:submit');
+
+		equal(span.text(), 'hi');
+	});
 })();

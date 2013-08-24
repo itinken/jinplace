@@ -360,8 +360,10 @@
 		setContent: function(data) {
 			var element = this.element;
 
-			if (!data)
-				data = this.opts.placeholder;
+			if (!data) {
+				element.html(this.opts.placeholder);
+				return;
+			}
 
 			if (this.opts.textOnly) {
 				element.text(data);

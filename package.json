@@ -7,10 +7,16 @@
 		"doc": "doc",
 		"test": "tests"
 	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/itinken/jinplace"
-	},
+	"repositories": [
+		{
+			"type": "hg",
+			"url": "https://bitbucket.org/itinken/jinplace"
+		},
+		{
+			"type": "git",
+			"url": "https://github.com/itinken/jinplace"
+		}
+	],
 	"keywords": [
 		"inline",
 		"edit",
