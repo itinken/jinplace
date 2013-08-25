@@ -689,10 +689,12 @@
 						.val(data);
 
 
+				return field;
+			},
+
+			activate: function(form, field) {
 				if (field.elastic)
 					field.elastic();
-
-				return field;
 			}
 		},
 
