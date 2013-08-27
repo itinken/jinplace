@@ -81,11 +81,6 @@
 		'submitFunction'
 	];
 
-	// Pairs of settings new,old.  We look for the old name and set the new.
-	var fallbacks = [
-		['placeholder', 'nil']  // will be removed at v1.0
-	];
-
 	/**
 	 * The actual constructor of the JinPlace object.
 	 *
@@ -98,13 +93,6 @@
 	 */
 	function JinPlace(element, options) {
 		var $el = this.element = $(element); // The editable element (often a span or div).
-
-		if (options) {
-			$.each(fallbacks, function (index, newold) {
-				var new_name = newold[0];
-				options[new_name] = options[new_name] || options[newold[1]];
-			});
-		}
 
 		var elementOptions = this.elementOptions($el);
 
@@ -145,11 +133,6 @@
 			});
 
 			opts.elementId = $el.attr('id');
-
-			$.each(fallbacks, function (index, newold) {
-				var new_name = newold[0];
-				opts[new_name] = opts[new_name] || $el.attr(make_attr_name(newold[1]));
-			});
 
 			if (opts.textOnly)
 				opts.textOnly = opts.textOnly !== 'false';
