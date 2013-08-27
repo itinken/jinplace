@@ -660,22 +660,16 @@
 			buttonsAllowed: true,
 
 			makeField: function (element, data) {
-				/**
-				 * Textarea jQuery object.
-				 * @property {function=} elastic - set if elastic plugin is installed.
-				 */
-				var field = $("<textarea>")
+				return $("<textarea>")
 						.css({
 							'min-width': element.width(),
 							'min-height': element.height()
 						})
 						.val(data);
-
-
-				return field;
 			},
 
 			activate: function(form, field) {
+				field.focus();
 				if (field.elastic)
 					field.elastic();
 			}
