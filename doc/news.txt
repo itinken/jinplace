@@ -1,5 +1,13 @@
 
 = News =
+== Version 1.0.0-rc.1 ==
+<b>11 Sep 2013</b>
+There is no intention to break backward compatibility so we
+are releasing as v1.0.0.
+
+There has only every been one deliberate change which was data-nil to
+data-placeholder.  Now for v1 the old data-nil name is being removed.
+
 == Version 0.11.0 submit function ==
 <b>12 Aug 2013</b> Add user defined submit function so that you
 have complete control over what happens when the edited data is
