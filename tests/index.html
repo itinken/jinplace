@@ -59,5 +59,12 @@
 <script src="buttons.js"></script>
 <script src="focus.js"></script>
 
+<!-- Used to work around a suspected IE(<8) bug. When focus is inside the fixture div when it is removed
+   - and replaced, then focus doesn't always get set. (Seems to fail every other time..).
+   - This input exists so that focus can be set outside the fixture as part of setup or teardown.
+ -->
+<!--suppress HtmlFormInputWithoutLabel -->
+<input id="outside" style="position:absolute;left:-1000px">
+
 </body>
 </html>

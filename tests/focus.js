@@ -6,6 +6,8 @@
 
 	module('focus', {
 		setup: function() {
+			$('#outside').focus(); // work round ie6-8 bug
+
 			span = $('<span id="FT">Q</span>').appendTo('#qunit-fixture');
 		}
 	});
