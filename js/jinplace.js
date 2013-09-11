@@ -155,8 +155,13 @@
 
 			// If there is no content, then we replace it with the empty indicator.
 			var $el = this.element;
-			if ($.trim($el.html()) == "")
+			if ($.trim($el.html()) == "") {
 				$el.html(opts.placeholder);
+
+				// In IE<9 the html is made uppercase which means it no longer matches what think the text is.
+				// So we retrieve the html.
+				opts.placeholder = $el.html();
+			}
 		},
 
 		/**
