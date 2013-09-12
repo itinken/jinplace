@@ -1,7 +1,7 @@
 
 = News =
-== Version 1.0.0-rc.1 ==
-<b>11 Sep 2013</b>
+== Version 1.0.0-rc.2 ==
+<b>12 Sep 2013</b>
 There is no intention to break backward compatibility so we
 are releasing as v1.0.0.
 

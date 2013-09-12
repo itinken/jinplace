@@ -1,6 +1,6 @@
 {
 	"name": "jinplace",
-	"version": "1.0.0-rc.1",
+	"version": "1.0.0-rc.2",
 	"description": "A jQuery plugin for in place editing on a page, primarly controlled by HTML markup.",
 	"main": "js/jinplace.js",
 	"bugs": "https://bitbucket.org/itinken/jinplace/issues",
