@@ -1,5 +1,16 @@
 
 = News =
+== Version 0.12.0 make select function behave as documented ==
+Unfortunately select controls are not working as documented.
+It expects the option value and converts it to the text value, instead
+of expecting the text value directly, as is documented.
+
+This release fixes the behaviour.
+
+Since there isn't any way to make this backward compatible (although
+it was always intended and documented to work that way) the -rc series
+has been withdrawn and there will be a new 1.0.0 later.
+
 == Version 0.11.0 submit function ==
 <b>12 Aug 2013</b> Add user defined submit function so that you
 have complete control over what happens when the edited data is

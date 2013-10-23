@@ -329,7 +329,7 @@
 		 */
 		onUpdate: function(editor, opts, data) {
 			var self = this;
-			self.setContent(editor.displayValue(data));
+			self.setContent(data);
 			editor.finish();
 			self.bindElement(opts);
 		},
