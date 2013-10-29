@@ -240,18 +240,6 @@ So add a new method to our plugin called 'value'.
   }
 </pre>
 
-==Displaying the result==
-Now the text of the field is being replaced by '1' or '0' rather than
-"Yes" or "No" so this leads us to the final method 'displayValue'.
-This converts the server values back to the display values.
-
-<pre code=js>
-  displayValue: function(data) {
-    data = data? 1: 0;
-    return this.choices[data];
-  }
-</pre>
-
 Now the plugin is complete. The display text shows 'Yes' or 'No'
 according to the return from the server.
 
@@ -347,14 +335,6 @@ $.fn.jinplace.editors['extra:checkbox_demo'] = {
 	// and return the appropriate value
 	value: function() {
 		return this.inputField.prop('checked')? 1: 0;
-	},
-
-	// Converts the value received as a reply from the server into the text
-	// to display when the editing control is removed.
-	// In our case the data should be 0 or 1, but we make sure that any true value
-	// received will be mapped to 1.
-	displayValue: function(data) {
-		return this.choices[data? 1: 0];
 	}
 };
 </pre>

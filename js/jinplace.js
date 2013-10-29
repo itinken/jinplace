@@ -584,25 +584,6 @@
 		},
 
 		/**
-		 * We are just about to remove the edit control and we have data returned from
-		 * the server. This method converts the server form of the data into the on page
-		 * value.
-		 *
-		 * The default implementation returns the data unchanged, which is suitable
-		 * for a text input.
-		 *
-		 * For a select list, you might have [['1', 'blue'], ['2', 'green']]; if the server
-		 * returns '2', then you return 'green' from this method.
-		 *
-		 * @param {string} data The data as returned by the server which is to be used to populate
-		 * the page after the edit control is removed. A string, but could be a JSON string.
-		 * @returns {string} The data modified in any way that is appropriate.
-		 */
-		displayValue: function (data) {
-			return data;
-		},
-
-		/**
 		 * This is not a method to be overridden. Used to set up blur event handlers
 		 * when you want the blur to be cancelled if there is a click on the control
 		 * or any of its components as will usually be the case.
@@ -707,9 +688,6 @@
 				if (!selected && elementChoice)
 					elementChoice.attr("selected", "1");
 
-				// Save the choices so we can decode the response.
-				this.choices = choices;
-
 				return field;
 			},
 
@@ -718,18 +696,6 @@
 				field.on('change', function() {
 					field.trigger('jip:submit');
 				});
-			},
-
-			displayValue: function(data) {
-				var display = '';
-				$.each(this.choices, function(index, value) {
-					if (data == value[0]) {
-						display = value[1];
-						return false;
-					}
-					return true;
-				});
-				return display;
 			}
 		}
 	};
