@@ -535,6 +535,13 @@ $(function() {
       // set the database value
       db[object][field](value);
 
+      if (field == 'direction') {
+        $.each(db.allowedDirections, function(i, opt) {
+          if (opt[0] == value)
+            value = opt[1];
+        });
+      }
+
     } else {
       value = db[object][field]();
 
