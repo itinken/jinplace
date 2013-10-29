@@ -29,6 +29,14 @@
         }
     }
 
+    var db = {
+      'colours': {
+        1: 'Red',
+        2: 'Green',
+        3: 'Blue'
+      }
+    };
+
     // sync mock up of the ajax call.
     $.ajax = function(url, opts) {
       console.log('AJAX', url, opts.data);
@@ -38,8 +46,17 @@
 
       var d = $.Deferred();
       if (opts.type == 'post') {
+        var result;
+
+        var obj = opts.data.object;
+        if (obj) {
+          result = db[obj][opts.data.value];
+        } else {
+          result = opts.data.value;
+        }
+
         // Return the value we received.
-        d.resolveWith(opts.context, [opts.data.value]);
+        d.resolveWith(opts.context, [result]);
       } else {
         // the url is the data we return
         d.resolveWith(opts.context, [url])

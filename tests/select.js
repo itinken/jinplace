@@ -8,7 +8,7 @@
 
 	module("select", {
 				setup: function() {
-					span = $('<span data-type=select>' + orig_text + '</span>');
+					span = $('<span data-object=colours data-type=select>' + orig_text + '</span>');
 					span.attr('data-data', '[[1, "Red"], [2, "Green", 1], [3, "Blue"]]');
 				}
 			}
