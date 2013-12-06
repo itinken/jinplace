@@ -1,6 +1,6 @@
 {
 	"name": "jinplace",
-	"version": "0.12.0",
+	"version": "1.0.0",
 	"title": "Jinplace - A plugin for in place editing",
 	"description": "A jQuery plugin for in place editing on a page, primarly controlled by HTML markup.",
 	"keywords": [

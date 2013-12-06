@@ -1,5 +1,9 @@
 
 = News =
+== Version 1.0.0 ==
+This is identical to the 0.12.0 version, as no further
+problems were found.
+
 == Version 0.12.0 make select function behave as documented ==
 Unfortunately select controls are not working as documented.
 It expects the option value and converts it to the text value, instead
