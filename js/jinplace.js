@@ -336,6 +336,7 @@
 			var self = this;
 			self.setContent(data);
 			editor.finish();
+			self.element.trigger('jinplace:done', [data]);
 			self.bindElement(opts);
 		},
 
