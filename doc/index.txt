@@ -25,7 +25,7 @@ supplying data to the editing controls and sending it to the server.
 * [https://bitbucket.org/itinken/jinplace/wiki/Plugin Writing an editor plugin]
 A complete walkthrough of developing a new editor plugin.
 
-* [https://bitbucket.org/itinken/jinplace/wiki/demo.html The demo] has
+* [http://jinplace.org/demo.html The demo] has
 code examples and their result.
 
 == Basic usage ==
@@ -42,7 +42,7 @@ the [https://bitbucket.org/itinken/jinplace/downloads download directory].
 === Mark up the page ===
 
 You should read this section in conjunction with
-the [https://bitbucket.org/itinken/jinplace/wiki/demo.html demo]
+the [http://jinplace.org/demo.html demo]
 which is structured like a mini tutorial for some of the
 basic mark up attributes.
 
@@ -56,7 +56,7 @@ Title: <span class="editable" data-url="/update_title.php">Hello world</span>
 </pre>
 
 == References ==
-First read through the [https://bitbucket.org/itinken/jinplace/wiki/demo.html demo] which
+First read through the [http://jinplace.org/demo.html demo] which
 includes the exact code samples required for various features.
 
 Then for complete details

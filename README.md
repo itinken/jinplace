@@ -13,7 +13,7 @@ mixture of the two depending on your needs.
 
 ## About 
 
-* [Live demo](https://bitbucket.org/itinken/jinplace/wiki/demo.html)
+* [Live demo](http://jinplace.org/demo.html)
 * [Downloads](https://bitbucket.org/itinken/jinplace/downloads)
 * [Source](https://bitbucket.org/itinken/jinplace/src)
 * [Documentation](https://bitbucket.org/itinken/jinplace/wiki/Documentation)
@@ -64,7 +64,7 @@ class 'editable' and applies the plugin to them.
  $('.editable').jinplace();
 ```
 
-For many more examples see the [online demo](https://bitbucket.org/itinken/jinplace/wiki/demo.html)
+For many more examples see the [online demo](http://jinplace.org/demo.html)
 and the [documentation](https://bitbucket.org/itinken/jinplace/wiki/Documentation)
 
 ### See also
