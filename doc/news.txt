@@ -1,5 +1,10 @@
 
 = News =
+== Version 1.0.1 ==
+Minor release mainly to fix the documentation of the demo, since
+it had to be moved.
+An event is triggered when the replacement is done.
+
 == Version 1.0.0 ==
 This is identical to the 0.12.0 version, as no further
 problems were found.
