@@ -21,7 +21,7 @@
 			"scripts"
 	],
 	"dependencies": {
-		"jquery": ">1.7 <2"
+		"jquery": ">1.7"
 	},
 	"licenses": [{
 		"type": "MIT"
