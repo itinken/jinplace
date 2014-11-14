@@ -316,12 +316,18 @@
 			}
 
 			$.when(rval)
-					.done(function(data) {
+					.done(function(data, textStatus, jqxhr) {
 						self.onUpdate(editor, opts, data);
+						self.element.trigger('jinplace:done', [data, textStatus, jqxhr]);
 					})
 					.fail(function(jqxhr, textStatus, errorThrown) {
 						self.cancel(editor);
+						// If you have your own submitFunction, the arguments may have different meanings.
 						self.element.trigger('jinplace:fail', [jqxhr, textStatus, errorThrown]);
+					})
+					.always(function(a, textStatus, c) {
+						// The meaning of the arguments depends on if this is success or failure.
+						self.element.trigger('jinplace:always', [a, textStatus, c]);
 					});
 		},
 
@@ -337,7 +343,6 @@
 			var self = this;
 			self.setContent(data);
 			editor.finish();
-			self.element.trigger('jinplace:done', [data]);
 			self.bindElement(opts);
 		},
 
