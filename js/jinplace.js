@@ -319,8 +319,9 @@
 					.done(function(data) {
 						self.onUpdate(editor, opts, data);
 					})
-					.fail(function() {
+					.fail(function(jqxhr, textStatus, errorThrown) {
 						self.cancel(editor);
+						self.element.trigger('jinplace:fail', [jqxhr, textStatus, errorThrown]);
 					});
 		},
 

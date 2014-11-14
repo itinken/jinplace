@@ -28,4 +28,49 @@
 		equal(all_ok, 'hello');
 	});
 
+	test('failure triggers jinplace:fail event', function() {
+		// We need to revert to the real ajax method for this test.
+		var saved = $.ajax;
+		$.ajax = $.orig_ajax;
+		try {
+			span = $('<span data-url="/no-such-page" data-ok-button="OK">Q</span>')
+					.appendTo($('#qunit-fixture'));
+
+			var d = $.Deferred();
+
+			// Set up handlers
+			span.on('jinplace:done', function() {
+				d.reject('fail due to successful request');
+			});
+			span.on('jinplace:fail', function(ev, xhr, textStatus, errorThrown) {
+				console.log(errorThrown); // Should be 'Not found' if running on the jinplace.org website
+				d.resolve(textStatus);
+			});
+
+			span.jinplace().click();
+			var input = span.find('input');
+			input.val('hello');
+			click_ok();
+			
+			QUnit.stop();
+			var t = setTimeout(function () {
+				// This is here in case there is no response. The test is failed with
+				// a timeout message.
+				console.log("after timeout", span.text());
+				d.reject('fail due to timeout');
+			}, 300);
+
+			// Whatever happens we check the data passed in the resolve or reject call and
+			// restart the test runner.
+			d.always(function(result) {
+				clearTimeout(t);
+				equal(result, "error");
+				QUnit.start();
+			});
+
+		} finally {
+			// Restore the mock ajax method.
+			$.ajax = saved;
+		}
+	});
 })();
