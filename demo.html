@@ -80,6 +80,16 @@ td {
   max-width: 900px;
   margin: 0 auto 0 auto;
 }
+.intro {
+  width: 700px;
+}
+#result-table {
+  background: #eee;
+  border: #888 solid 1px;
+  float:left;
+  margin-bottom: 12px;
+}
+#result-table-placeholder { display: none; height: 100px;}
 .demo {
   overflow: hidden;
   border-top: 1px solid #ccc;
@@ -97,8 +107,10 @@ td {
   white-space: pre;
 }
 .syntaxhighlighter {
+  position: static !important;
   margin: 2px 0;
 }
+.syntaxhighlighter table td.code .container { position: static !important;}
 .try-it {
   background-color: #dce6ea;
   padding-bottom: 20px;
@@ -139,6 +151,13 @@ input.short {
     width: 1250px;
   }
 
+  #result-table {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    padding: 10px;
+  }
   .description {
     float: left;
     width: 900px;
@@ -174,7 +193,7 @@ input.short {
 </div>
 <![endif]-->
 
-<div class="description">
+<div class="intro">
   <p>In this demo there is no actual communication with a remote server.
     Instead all load and save operations take place on a mini database within the
     page itself.
@@ -182,11 +201,10 @@ input.short {
     the table below.
   </p>
 </div>
-<div style="float:left; margin-right: 20px;">
+<div style="clear: both;">
   <p>See also <a class="button" href="https://bitbucket.org/itinken/jinplace/wiki/Documentation">Documentation</a> and <a class="button" href="https://bitbucket.org/itinken/jinplace/downloads">Downloads</a></p>
 </div>
-<div style="position: fixed; top:0; right:0;z-index:999; padding:10px;
-	background:#eee;border:#888 solid 1px;">
+<div id="result-table">
 <table>
 <caption>The database. See your changes here.</caption>
 <tr>
@@ -212,6 +230,7 @@ input.short {
 </tr>
 </table>
 </div>
+<div id="result-table-placeholder">&nbsp;</div>
 <p>
 
 <div id="example-input" class="demo">
@@ -564,6 +583,40 @@ $(function() {
 
   $.fn.jinplace.defaults.submitFunction = dataFunc;
   $.fn.jinplace.defaults.loadFunction = dataFunc;
+
+  $(function(){
+
+    var tableTop = $('#result-table').offset().top;
+
+    function floatTable(place) {
+      place = place || 'block';
+      $('#result-table').css({position: 'fixed', top: '0px'});
+      $('#result-table-placeholder').css('display', place);
+    }
+
+    function unfloatTable() {
+      $('#result-table').css({position: 'static', top: '0px'});
+      $('#result-table-placeholder').css('display', 'none');
+    }
+
+    $(window).resize(function() {
+      if ($(window).width() >= 1270) {
+        floatTable('none');
+      } else {
+        unfloatTable();
+      }
+    });
+
+    $(window).scroll(function(){
+      if ($(window).width() < 1270) {
+        if ($(window).scrollTop() > tableTop) {
+          floatTable();
+        } else {
+          unfloatTable();
+        }
+      }
+    });
+  });
 });
 </script>
 
