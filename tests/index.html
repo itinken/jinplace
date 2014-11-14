@@ -37,6 +37,8 @@
       }
     };
 
+    $.orig_ajax = $.ajax;
+
     // sync mock up of the ajax call.
     $.ajax = function(url, opts) {
       console.log('AJAX', url, opts.data);
