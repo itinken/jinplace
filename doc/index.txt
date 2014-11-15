@@ -22,6 +22,10 @@ All the attributes and configuration settings and how to use them.
 * [https://bitbucket.org/itinken/jinplace/wiki/Data Sending and receiving data] About
 supplying data to the editing controls and sending it to the server.
 
+* [https://bitbucket.org/itinken/jinplace/wiki/Events Events] The events that
+are triggered. They can be used to add your own actions to be
+performed on success or failure of the editing operation.
+
 * [https://bitbucket.org/itinken/jinplace/wiki/Plugin Writing an editor plugin]
 A complete walkthrough of developing a new editor plugin.
 
