@@ -1,4 +1,4 @@
-/** @preserve Copyright © 2013, Itinken Limited.
+/** @preserve Copyright © 2013, 2014 the jinplace team and contributors.
  * MIT Licence */
 /*
  Permission is hereby granted, free of charge, to any person obtaining
@@ -317,13 +317,14 @@
 
 			$.when(rval)
 					.done(function(data, textStatus, jqxhr) {
-						self.onUpdate(editor, opts, data);
+						// If you have your own submitFunction, the arguments may have different meanings.
 						self.element.trigger('jinplace:done', [data, textStatus, jqxhr]);
+						self.onUpdate(editor, opts, data);
 					})
 					.fail(function(jqxhr, textStatus, errorThrown) {
-						self.cancel(editor);
 						// If you have your own submitFunction, the arguments may have different meanings.
 						self.element.trigger('jinplace:fail', [jqxhr, textStatus, errorThrown]);
+						self.cancel(editor);
 					})
 					.always(function(a, textStatus, c) {
 						// The meaning of the arguments depends on if this is success or failure.
