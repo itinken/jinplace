@@ -84,10 +84,12 @@ td {
   width: 700px;
 }
 #result-table {
-  background: #eee;
-  border: #888 solid 1px;
   float:left;
+  background: #eee;
+  padding: 10px;
   margin-bottom: 12px;
+  border: #888 solid 1px;
+  z-index: 2;
 }
 #result-table-placeholder { display: none; height: 100px;}
 .demo {
@@ -151,13 +153,6 @@ input.short {
     width: 1250px;
   }
 
-  #result-table {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 2;
-    padding: 10px;
-  }
   .description {
     float: left;
     width: 900px;
@@ -585,37 +580,44 @@ $(function() {
   $.fn.jinplace.defaults.loadFunction = dataFunc;
 
   $(function(){
+    const rt = $('#result-table');
+    const rtp = $('#result-table-placeholder');
+    var tableTop = rt.offset().top;
+    var inline;
+    var floating;
 
-    var tableTop = $('#result-table').offset().top;
+    function recalc() {
+      var ninline = false;   // Table is below the introduction text, rather than over on the right.
+      var nfloating = false; // Table is inline and floating at the top of the page.
+      if ($(window).width() < 1270)
+        ninline = true;
+      if ($(window).scrollTop() > tableTop)
+        nfloating = true;
 
-    function floatTable(place) {
-      place = place || 'block';
-      $('#result-table').css({position: 'fixed', top: '0px'});
-      $('#result-table-placeholder').css('display', place);
-    }
+      if (ninline !== inline || nfloating !== floating) {
+        inline = ninline;
+        floating = nfloating;
 
-    function unfloatTable() {
-      $('#result-table').css({position: 'static', top: '0px'});
-      $('#result-table-placeholder').css('display', 'none');
-    }
-
-    $(window).resize(function() {
-      if ($(window).width() >= 1270) {
-        floatTable('none');
-      } else {
-        unfloatTable();
-      }
-    });
-
-    $(window).scroll(function(){
-      if ($(window).width() < 1270) {
-        if ($(window).scrollTop() > tableTop) {
-          floatTable();
+        if (inline) {
+          if (floating) {
+            rt.css({'position': 'fixed', 'top': '0', 'right': 'inherit'});
+            rtp.css('display', 'block');
+          } else {
+            rt.css({'position': 'static'});
+            rtp.css('display', 'none');
+          }
         } else {
-          unfloatTable();
+          rt.css({'position': 'fixed', 'top': '0', right: '0'});
+          rtp.css('display', 'none');
         }
       }
-    });
+    }
+
+    recalc();
+
+    // Bind to resize and scroll events.
+    $(window).resize(recalc);
+    $(window).scroll(recalc);
   });
 });
 </script>
