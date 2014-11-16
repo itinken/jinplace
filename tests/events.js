@@ -88,7 +88,7 @@
 
 		var input = span.find('input');
 
-		const changed_data = 'hello';
+		var changed_data = 'hello';
 		input.val(changed_data);
 		click_ok();
 
