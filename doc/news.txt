@@ -1,12 +1,16 @@
 
 = News =
+== Version 1.1.0 ==
+<b>16 Nov 2014</b> This release adds and documents events that are triggered after the
+submit is processed.
+
 == Version 1.0.1 ==
-Minor release mainly to fix the documentation of the demo, since
+<b>20 Jun 2014</b> Minor release mainly to fix the documentation of the demo, since
 it had to be moved.
 An event is triggered when the replacement is done.
 
 == Version 1.0.0 ==
-This is identical to the 0.12.0 version, as no further
+<b>6 Dec 2014</b> This is identical to the 0.12.0 version, as no further
 problems were found.
 
 == Version 0.12.0 make select function behave as documented ==
