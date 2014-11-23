@@ -17,7 +17,6 @@
 		var all_ok = false;
 		span.on('jinplace:done', function (ev, data) {
 			all_ok = data;
-			console.log('all done', data);
 		});
 		span.jinplace().click();
 
@@ -43,7 +42,9 @@
 				d.reject('fail due to successful request');
 			});
 			span.on('jinplace:fail', function(ev, xhr, textStatus, errorThrown) {
-				console.log(errorThrown); // Should be 'Not found' if running on the jinplace.org website
+				// Should be 'Not found' if running on the jinplace.org website
+				// A cross site scripting error if running the file directly.
+				console.log('ERR:',errorThrown);
 				d.resolve(textStatus);
 			});
 
@@ -111,7 +112,6 @@
 				d.reject('fail due to successful request');
 			});
 			span.on('jinplace:always', function (ev, xhr, textStatus, errorThrown) {
-				console.log(errorThrown); // Should be 'Not found' if running on the jinplace.org website
 				d.resolve(textStatus);
 			});
 
@@ -140,5 +140,56 @@
 			// Restore the mock ajax method.
 			$.ajax = saved;
 		}
+	});
+
+	test('success event when there is a submit function', function () {
+		var all_ok = '';
+		span.on('jinplace:done', function (ev, data) {
+			all_ok = 'data:' + data;
+			console.log('all done', data);
+		});
+		span.on('jinplace:always', function (ev, data) {
+			all_ok += ':always:' + data;
+		});
+
+		span.jinplace({
+			submitFunction: function() {
+				return 'hello';
+			}
+		}).click();
+
+		var input = span.find('input');
+
+		var changed_data = 'hello';
+		input.val(changed_data);
+		click_ok();
+
+		// The done handler sets all_ok to changed_data, then the always handler appends ' always '+changed_data.
+		equal(all_ok, 'data:' + changed_data + ':always:' + changed_data);
+	});
+
+	test('failure event when there is a submit function', function () {
+		var all_ok = '';
+		span.on('jinplace:fail', function (ev, data) {
+			all_ok = 'data:' + data;
+		});
+		span.on('jinplace:always', function (ev, data) {
+			all_ok += ':always:' + data;
+		});
+
+		span.jinplace({
+			submitFunction: function () {
+				return $.Deferred().reject('hello');
+			}
+		}).click();
+
+		var input = span.find('input');
+
+		var changed_data = 'hello';
+		input.val(changed_data);
+		click_ok();
+
+		// The done handler sets all_ok to changed_data, then the always handler appends ' always '+changed_data.
+		equal(all_ok, 'data:' + changed_data + ':always:' + changed_data);
 	});
 })();

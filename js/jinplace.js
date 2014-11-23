@@ -327,7 +327,7 @@
 						self.cancel(editor);
 					})
 					.always(function(a, textStatus, c) {
-						// The meaning of the arguments depends on if this is success or failure.
+						// The meaning of the arguments depends on whether this is success or failure.
 						self.element.trigger('jinplace:always', [a, textStatus, c]);
 					});
 		},
