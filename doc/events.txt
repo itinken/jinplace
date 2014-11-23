@@ -24,6 +24,11 @@ $('.editable').jinplace()
 </pre>
 
 == Available events ==
+Full details of all the available events.
+These events are always fired, even if you define your own
+submitFunction. Either 'jinplace:done' or 'jinplace:fail' will be
+fired, followed by 'jinplace:always'.
+
 === Event jinplace:done ===
 This event is fired after a submit is successfully completed.
 It occurs after the submit operation and before the edit field is
@@ -34,14 +39,24 @@ element.on('jinplace:done',
 	// data: The new text for the element
 	// textStatus: Text from the http reply.
 	// jqxhr: the jquery version of the XmlHttpRequest object
-	function(ev, data, textStatus, jqxhr) {
+	function(ev, data, [textStatus, [jqxhr]]) {
 	}
 );
 </pre>
-Your handler function is given the returned data as its first
-argument.
-There are probably not many uses for the other arguments. The
-textStatus value is most likely blank.
+Your handler function is always passed the following arguments.
+
+; ev
+:   The event object
+; data
+:   The data returned by the submit which will be used to populate
+the text control.
+
+By default, unless you supply a ''submitFunction'', there will be two
+further arguments from the ajax call.
+; textStatus
+:   A text representation of the http status, normally blank
+; jqxhr
+:   The jquery enhanced XmlHttpRequest object.
 
 If a custom 'submitFunction' is defined then the arguments (if any)
 are entirely determined by that function.
@@ -62,13 +77,22 @@ element.on('jinplace:fail',
 	function(ev, jqxhr, textStatus, errorThrown) {
 	}
 </pre>
-The first argument is the jquery version of the XmlHttpRequest object,
-the second arg will be 'error', 'timeout', 'parsererror', 'abort' and
-the final errorThrown argument is the text part of the http reply such
-as 'Not Found' 'Internal Server Error' etc. Together you may be
-able to use this to work out what has gone wrong and the likelyhood
-of the user being able to correct the problem.
-Mostly just knowing that the operation failed is all you will need.
+If you have not overridden the 'submitFunction' then the handler will
+be passed the following arguments from the ajax call.
+
+; ev
+:   The event object, this is always passed.
+; jqxhr
+:   The jquery enhanced XmlHttpRequest object.
+; textStatus
+:   This will be 'error', 'timeout', 'parsererror', 'abort' etc to
+describe the kind of error.
+; errorThrown
+:   This is the text part of the http reply such as 'Not Found'
+'Internal Server Error' etc.  Together you may be able to use this to
+work out what has gone wrong and the likelihood of the user being able
+to correct the problem.  Mostly just knowing that the operation failed
+is all you will need.
 
 If a custom 'submitFunction' is defined then that function
 determines what arguments your handler is called with.
