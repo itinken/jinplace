@@ -1,23 +1,18 @@
 {
 	"name": "jinplace",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"title": "Jinplace - A plugin for in place editing",
 	"description": "A jQuery plugin for in place editing on a page, primarly controlled by HTML markup.",
 	"directories": {
 		"doc": "doc",
 		"test": "tests"
 	},
-	"repositories": [
-		{
+	"repository": {
 			"type": "hg",
 			"url": "https://bitbucket.org/itinken/jinplace"
-		},
-		{
-			"type": "git",
-			"url": "https://github.com/itinken/jinplace"
-		}
-	],
+	},
 	"keywords": [
+		"jquery-plugin",
 		"inline",
 		"edit",
 		"form"
@@ -36,8 +31,12 @@
 	"bugs": "https://bitbucket.org/itinken/jinplace/issues",
 
 	"dependencies": {
-		"jquery-untouched": ">=1.7"
+		"jquery": ">=1.7"
 	},
+
+	"files": [
+		"js/*"
+	],
 
 	"devDependencies": {
 		"grunt": "~0.4.1",
