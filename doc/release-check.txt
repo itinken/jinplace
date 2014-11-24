@@ -1,9 +1,10 @@
 
-* Change version number in bower.json jinplace.jquery.json package.json
+* Change version number in bower.json jinplace.jquery.json
+  package.json doc/README, doc/index.txt
 * Add an entry to doc/news.txt for the release. Ensure date for
   release is made and correct.
 * Check that all in with a message describing the release.
-* Tag release to vD.D.D
+* Tag release to vX.X.X
 * Install tests to test site
 * Run tests on IE6,7,10 Chrome, Firefox, Safari. Android, iPad/phones
 * Push to bitbucket
@@ -14,3 +15,4 @@
   to plugins.jquery.com (NOT any more! Its not operational for new
   releases at the moment.)
 * Release to npm: npm publish .
+* Update jinplace.org with the released demo and files.

@@ -40,8 +40,16 @@ first.  It will work with jQuery greater than or equal to version 1.7.
 If you use version 2.0 or above, then you will of course lose IE6-8
 compatibility.
 
-Download the latest version of this plugin from
-the [https://bitbucket.org/itinken/jinplace/downloads download directory].
+Add the following line to include the plugin from the cdnjs.com
+delivery network.
+
+<pre code=html>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jinplace/1.1.0/jinplace.min.js"></script>
+</pre>
+
+Or you can download the latest version of this plugin from
+the [https://bitbucket.org/itinken/jinplace/downloads download directory]
+and include it in your project.
 
 === Mark up the page ===
 
