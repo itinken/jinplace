@@ -38,7 +38,7 @@
   </component>
   <component name="TaskProjectConfiguration">
     <server type="Tintrak" url="http://track.itinken.com" />
-    <server type="GitHub" url="github.com" />
     <server type="Bitbucket" url="https://api.bitbucket.org/1.0/repositories/itinken/jinplace" />
+    <server type="GitHub" url="github.com" />
   </component>
 </project>
