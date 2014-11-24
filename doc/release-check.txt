@@ -14,5 +14,6 @@
 * Update to master and push to github, this will release
   to plugins.jquery.com (NOT any more! Its not operational for new
   releases at the moment.)
+* Run grunt minify
 * Release to npm: npm publish .
 * Update jinplace.org with the released demo and files.
