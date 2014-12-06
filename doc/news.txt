@@ -1,5 +1,11 @@
 
 = News =
+== Version 1.1.1 ==
+This release is identical to v1.1.0, except for a fix to the demo.
+You do not need to upgrade and it will not be released through npm.
+The problem was restricted to the demo itself, to be
+clear jinplace itself works all the way back to IE6.
+
 == Version 1.1.0 ==
 <b>16 Nov 2014</b> This release adds and documents events that are triggered after the
 submit is processed.
