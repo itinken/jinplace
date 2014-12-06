@@ -580,8 +580,8 @@ $(function() {
   $.fn.jinplace.defaults.loadFunction = dataFunc;
 
   $(function(){
-    const rt = $('#result-table');
-    const rtp = $('#result-table-placeholder');
+    var rt = $('#result-table');
+    var rtp = $('#result-table-placeholder');
     var tableTop = rt.offset().top;
 
     // Keep the current state, to avoid pointless changes on every scroll or resize.  This was a
