@@ -255,8 +255,10 @@
 
 			} else if (opts.loadurl) {
 				data = opts.loadFunction(opts);
+			} else if (opts.textOnly) {
+				data = $.trim(this.element.text());
 			} else {
-				data = $.trim(this.element.html());
+				data = $.trim(this.element.html().replace(/&amp;/gi, '&'));
 			}
 
 			var placeholderFilter = function (data) {
@@ -410,7 +412,7 @@
 	$.fn[pluginName].defaults = {
 		url: document.location.pathname,
 		type: "input",
-		textOnly: 2,
+		textOnly: true,
 		placeholder: '[ --- ]',
 
 		/**
