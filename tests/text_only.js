@@ -23,7 +23,7 @@
 		submit();
 
 		ok(div.text().indexOf('World') > 0, 'text changed');
-		ok(div.text().toLowerCase().indexOf('<ul>') >= 0, 'literal html');
+		ok(div.text().toLowerCase().indexOf('<li>') >= 0, 'literal html');
 	});
 
 	test('With text-only==false returned html is interpreted', 3, function() {
@@ -53,7 +53,7 @@
 		submit();
 
 		ok(div.text().indexOf('World') > 0, 'text changed');
-		ok(div.text().indexOf('<ul>') == -1, 'no literal html');
+		ok(div.text().indexOf('<li>') == -1, 'no literal html');
 		equal(div.text(), 'HelloWorld');
 	});
 })();

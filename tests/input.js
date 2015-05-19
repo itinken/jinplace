@@ -1,4 +1,3 @@
-
 ( function() {
 	var orig = 'Hello world';
 	var span;
@@ -80,6 +79,30 @@
 			start();
 		}, BLUR_TIMEOUT);
 
+	});
+
+	test('Values with html reserved characters', 2, function() {
+		span = span_ok;
+		span.text('Jack & Jill');
+		span.appendTo(qfix).jinplace();
+		equal(span.text(), 'Jack & Jill');
+
+		span.click();
+		var inp = span.find('input');
+		equal(inp.val(), 'Jack & Jill');
+	});
+
+	test('Value from data-data with html reserved characters', 2, function() {
+		span = span_ok;
+		span.text('Hello world');
+		span.attr('data-data', 'Jack & Jill');
+
+		span.appendTo(qfix).jinplace();
+		equal(span.text(), 'Hello world');
+
+		span.click();
+		var inp = span.find('input');
+		equal(inp.val(), 'Jack & Jill')
 	});
 
 } )();
