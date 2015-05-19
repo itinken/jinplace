@@ -270,7 +270,7 @@ type to <em>textarea</em>.
 
   &lt;div class="editable"
     data-type="textarea" data-url="/internal/person/favourites">
-    Chocolate and Chips
+    Chocolate &amp; Chips
   &lt;/div>
 
 </pre>
@@ -477,6 +477,55 @@ Any element can be used.
     So the current (probably stale in this demo) text is disregarded.
     You can view the results of your edits in the person2 row at the top
     of this page.</p>
+</div>
+
+</div>
+
+<div id="example-text-only-true" class="demo">
+<div class="description">
+<h2>Text only true</h2>
+<p>By default the input field is treated as text. Any html like tags are shown literally and are not
+treated as markup.</p>
+
+<pre class="example">
+  &lt;div id="text-only-true" class="editable"
+    data-type="textarea"
+    data-url="/internal/person/favourites"
+    data-text-only="true">
+    Chocolate &amp; Chips
+    &amp;lt;hr>
+    More text
+  &lt;/div>
+</pre>
+</div>
+
+<div class="try-it">
+  <p>Any html you enter here will appear literally when the edit is finished.</p>
+</div>
+
+</div>
+
+<div id="example-text-only-false" class="demo">
+<div class="description">
+<h2>Text only false</h2>
+<p>If the text-only attribute is set to false, then html markup in the value is treated as markup.</p>
+<p>You are responisable for ensuring that there are no security implications.  A typical use is to use the
+<i>loadurl</i> attribute to load a markdown version of the text to edit and the resulting html is returned
+to display.</p>
+
+<pre class="example">
+  &lt;div class="editable"
+    data-type="textarea" data-url="/internal/person/favourites"
+    data-text-only="false">
+    Chocolate &amp; Chips
+    &lt;hr>
+    More text
+  &lt;/div>
+</pre>
+</div>
+
+<div class="try-it">
+  <p>Any html you enter here will be used to format the text when the edit is finished.</p>
 </div>
 
 </div>
