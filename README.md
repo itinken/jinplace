@@ -45,7 +45,7 @@ You can use the versions hosted on cdnjs:
 
 ```html
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jinplace/1.1.0/jinplace.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jinplace/1.2.0/jinplace.min.js"></script>
 ```
 
 Alternatively you can of course host the files as part of your own

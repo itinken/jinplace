@@ -1,5 +1,9 @@
 
 = News =
+== Version 1.2.0 ==
+<b>26 May 2015</b>This release contains a fix to prevent '&' characters
+being converted to the "&amp;" form during editing.
+
 == Version 1.1.1 ==
 This release is identical to v1.1.0, except for a fix to the demo.
 You do not need to upgrade and it will not be released through npm.
