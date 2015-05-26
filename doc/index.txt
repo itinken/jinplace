@@ -44,7 +44,7 @@ Add the following line to include the plugin from the cdnjs.com
 delivery network.
 
 <pre code=html>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jinplace/1.2.0/jinplace.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jinplace/1.2.1/jinplace.min.js"></script>
 </pre>
 
 Or you can download the latest version of this plugin from

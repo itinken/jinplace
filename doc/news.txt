@@ -1,5 +1,9 @@
 
 = News =
+== Version 1.2.1 ==
+<b>26 May 2015</b>This release fixes a packaging error for npm.  There
+is no functional difference to the v1.2.0 release
+
 == Version 1.2.0 ==
 <b>26 May 2015</b>This release contains a fix to prevent '&' characters
 being converted to the "&amp;" form during editing.
