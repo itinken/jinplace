@@ -76,6 +76,7 @@ element.on('jinplace:fail',
 	// errorThrown: The text in the error reply
 	function(ev, jqxhr, textStatus, errorThrown) {
 	}
+);
 </pre>
 If you have not overridden the 'submitFunction' then the handler will
 be passed the following arguments from the ajax call.

@@ -1,6 +1,5 @@
 
-* Change version number in bower.json jinplace.jquery.json
-  package.json doc/README, doc/index.txt
+* Change version number in bower.json jinplace.jquery.json package.json doc/README, doc/index.txt
 * Add an entry to doc/news.txt for the release. Ensure date for
   release is made and correct.
 * Check that all in with a message describing the release.
@@ -9,6 +8,8 @@
 * Run tests on IE6,7,10 Chrome, Firefox, Safari. Android, iPad/phones
 * Push to bitbucket
 * grunt dist:vX.X.X
+* Fix -vx.x.x to -x.x.x
+* Run grunt minify
 * Upload the dist files to bitbucket download section
 * Update bitbucket wiki and push out.
 * Update to master and push to github, this will release
