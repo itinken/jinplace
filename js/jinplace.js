@@ -58,6 +58,9 @@
 	 * @property {string} okButton - Create a submit button with this name
 	 * @property {string} cancelButton - Create a cancel button with this name
 	 * @property {string} inputClass - A css class that is added to the input field
+	 * @property {string} formClass - A css class that is added to the form field
+	 * @property {string} okClass - A css class that is added to the ok button
+	 * @property {string} cancelClass - A css class that is added to the cancel button
 	 * @property {jQuery|string} activator - Object (or css selector) for object to activate editing. Defaults to the element itself.
 	 * @property {boolean} textOnly - When true (the default) text returned from server is displayed literally and not as html.
 	 * @property {string} placeholder - Text to display in empty elements.
@@ -75,6 +78,9 @@
 		'okButton',
 		'cancelButton',
 		'inputClass',
+		'formClass',
+		'okClass',
+		'cancelClass',
 		'activator',
 		'textOnly',
 		'placeholder',
@@ -298,7 +304,7 @@
 		 *
 		 * @this {JinPlace}
 		 * @param {editorBase} editor
-         * @param {Options} opts
+		 * @param {Options} opts
 		 */
 		submit: function (editor, opts) {
 			var self = this;
@@ -467,6 +473,7 @@
 		var form = $("<form>")
 				.attr("style", "display: inline;")
 				.attr("action", "javascript:void(0);")
+				.addClass(opts.formClass)
 				.append(inputField);
 
 		if (buttons)
@@ -492,15 +499,17 @@
 
 		var ok = opts.okButton;
 		if (ok) {
-			var $button = $("<input>").attr("type", "button").attr("value", ok)
-					.addClass('jip-button jip-ok-button');
+			var $button = $("<button>").attr("type", "submit").html(ok)
+					.addClass('jip-button jip-ok-button')
+					.addClass(opts.okClass);
 			setHandler($button, 'submit');
 		}
 
 		var cancel = opts.cancelButton;
 		if (cancel) {
-			$button = $("<input>").attr("type", "button").attr("value", cancel)
-					.addClass('jip-button jip-cancel-button');
+			$button = $("<button>").attr("type", "submit").html(cancel)
+					.addClass('jip-button jip-cancel-button')
+					.addClass(opts.cancelClass);
 			setHandler($button, 'jip:cancel');
 		}
 	};
