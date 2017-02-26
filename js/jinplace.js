@@ -58,6 +58,8 @@
 	 * @property {string} okButton - Create a submit button with this name
 	 * @property {string} cancelButton - Create a cancel button with this name
 	 * @property {string} inputClass - A css class that is added to the input field
+	 * @property {string} okButtonClass - A css class that is added to the ok button
+	 * @property {string} cancelButtonClass - A css class that is added to the cancel button
 	 * @property {jQuery|string} activator - Object (or css selector) for object to activate editing. Defaults to the element itself.
 	 * @property {boolean} textOnly - When true (the default) text returned from server is displayed literally and not as html.
 	 * @property {string} placeholder - Text to display in empty elements.
@@ -78,7 +80,9 @@
 		'activator',
 		'textOnly',
 		'placeholder',
-		'submitFunction'
+		'submitFunction',
+		'okButtonClass',
+		'cancelButtonClass'
 	];
 
 	/**
@@ -492,17 +496,26 @@
 
 		var ok = opts.okButton;
 		if (ok) {
-			var $button = $("<input>").attr("type", "button").attr("value", ok)
-					.addClass('jip-button jip-ok-button');
+			var $button = $("<input>").attr("type", "button").attr("value", ok);
+			if (opts.okButtonClass) {
+				$button.addClass(opts.okButtonClass);
+			} else {
+				$button.addClass('jip-button jip-ok-button');
+			}
 			setHandler($button, 'submit');
 		}
 
 		var cancel = opts.cancelButton;
 		if (cancel) {
-			$button = $("<input>").attr("type", "button").attr("value", cancel)
-					.addClass('jip-button jip-cancel-button');
+			$button = $("<input>").attr("type", "button").attr("value", cancel);
+			if (opts.cancelButtonClass) {
+				$button.addClass(opts.cancelButtonClass);
+			} else {
+				$button.addClass('jip-button jip-cancel-button');
+			}
 			setHandler($button, 'jip:cancel');
 		}
+		
 	};
 
 	//noinspection UnnecessaryLocalVariableJS
