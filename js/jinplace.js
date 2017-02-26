@@ -67,6 +67,7 @@
 
 	var option_list = ['type',
 		'url',
+		'method',
 		'data',
 		'loadurl',
 		'elementId',
@@ -411,6 +412,7 @@
 	 */
 	$.fn[pluginName].defaults = {
 		url: document.location.pathname,
+		method: "post",
 		type: "input",
 		textOnly: true,
 		placeholder: '[ --- ]',
@@ -429,7 +431,7 @@
 		 */
 		submitFunction: function(opts, value) {
 			return $.ajax(opts.url, {
-				type: "post",
+				type: opts.method,
 				data: requestParams(opts, value),
 				dataType: 'text',
 
