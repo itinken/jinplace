@@ -50,6 +50,7 @@
 	 * @class Options
 	 * @property {!string} type - The type of field. Defaults to 'input'
 	 * @property {string} url - The url to submit to. Defaults to same page
+	 * @property {string} method - The HTTP method to use when submitting. Defaults to POST
 	 * @property {string} data - Text or JSON data as initial editing text
 	 * @property {string} loadurl - The URL to load content for editing
 	 * @property {string} elementId - The ID of the element
@@ -69,6 +70,7 @@
 
 	var option_list = ['type',
 		'url',
+		'method',
 		'data',
 		'loadurl',
 		'elementId',
@@ -415,6 +417,7 @@
 	 */
 	$.fn[pluginName].defaults = {
 		url: document.location.pathname,
+		method: "post",
 		type: "input",
 		textOnly: true,
 		placeholder: '[ --- ]',
@@ -433,7 +436,7 @@
 		 */
 		submitFunction: function(opts, value) {
 			return $.ajax(opts.url, {
-				type: "post",
+				type: opts.method,
 				data: requestParams(opts, value),
 				dataType: 'text',
 
