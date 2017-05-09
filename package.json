@@ -38,7 +38,7 @@
 		"js/*"
 	],
 
-	"main", "js/jinplace.js",
+	"main": "js/jinplace.js",
 
 	"devDependencies": {
 		"grunt": "~0.4.1",
