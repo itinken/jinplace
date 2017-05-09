@@ -38,6 +38,8 @@
 		"js/*"
 	],
 
+	"main", "js/jinplace.js",
+
 	"devDependencies": {
 		"grunt": "~0.4.1",
 		"grunt-contrib-qunit": "~0.2.2",
